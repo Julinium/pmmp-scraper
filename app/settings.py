@@ -2,9 +2,11 @@ import os, argparse
 from dotenv import load_dotenv
 from pathlib import Path
 
-# Go up one directory to load the .env file from project/
+
+# Load the .env file from parent directory
 env_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
+
 
 # More verbose output
 DEBUG_MODE = True 
@@ -19,7 +21,6 @@ REFRESH_EXISTING = False
 # Initialize parser
 parser = argparse.ArgumentParser()
 
-
 # Add arguments
 parser.add_argument('--level', type=str, required=False, help='debug for more verbose output.')
 parser.add_argument('--links', type=str, required=False, help='import to use already saved links.')
@@ -31,6 +32,8 @@ args = parser.parse_args()
 DEBUG_MODE = args.level.lower() == 'debug'
 IMPORT_LINKS = args.links.lower() == "import"
 REFRESH_EXISTING = args.found.lower() == "refresh"
+
+
 
 # Target website. Held for privacy
 SITE_ROOT = os.getenv("SITE_ROOT")
@@ -51,6 +54,8 @@ SELENO_LOGS_DIR = os.getenv("SELENO_LOGS_DIR")
 SELENO_DIR = os.getenv("SELENO_DIR")
 
 # User agents and user credentials to use randomly to avoid blacklisting
+# Example: USER_AGENTS = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', ...]
+# DCE_CREDS = [{'fname': 'john', 'lname': 'Doe', 'email': 'johndoe@fakemail.com'}, ...]
 USER_AGENTS = os.getenv("USER_AGENTS")
 DCE_CREDS = os.getenv("DCE_CREDS")
 
