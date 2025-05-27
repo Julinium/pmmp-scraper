@@ -8,3 +8,6 @@ Before scraping a website, please make sure the owner of the website allows it.
 
 # Docker ?
 This application uses Chromium web browser and relies on Cron jobs to update database frequently. It's not pretty practical to run it as a docker container. Instead, it runs well on the server/hypervisor.
+
+# Scraping a different website ?
+This won't probably work out of the box. Because scraping depends on the target website technology and replies ...

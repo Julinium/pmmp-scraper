@@ -6,11 +6,14 @@ from pathlib import Path
 env_path = Path(__file__).resolve().parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
 
-
-DEBUG_MODE = True
+# More verbose output
+DEBUG_MODE = True 
+# Use Chromium without GUI. Set to True if running on a non-GUI system
 HEADLESS_MODE = True
+# Instead of scraping the target website for items links, use those previously saved in imports/links.csv
 IMPORT_LINKS = True
-REFRESH_EXISTING = False    # Check existing Cons against portal.
+# Check existing items against portal for changes.
+REFRESH_EXISTING = False    
 
 
 # Initialize parser
@@ -29,21 +32,28 @@ DEBUG_MODE = args.level.lower() == 'debug'
 IMPORT_LINKS = args.links.lower() == "import"
 REFRESH_EXISTING = args.found.lower() == "refresh"
 
-
+# Target website. Held for privacy
 SITE_ROOT = os.getenv("SITE_ROOT")
 SITE_INDEX = os.getenv("SITE_INDEX")
 LINK_PREFIX = os.getenv("LINK_PREFIX")
 LINK_STITCH = os.getenv("LINK_STITCH")
+
+# Database credentials. Held for security
 DB_SERVER = os.getenv("DB_SERVER")
 DB_PORT = os.getenv("DB_PORT")
 DB_NAME = os.getenv("DB_NAME")
 DB_USER = os.getenv("DB_USER")
-DB_PASS = os.getenv("SITE_ROOT")
+DB_PASS = os.getenv("DB_PASS")
+
+# Directories to save media files and logs
 MEDIA_ROOT = os.getenv("MEDIA_ROOT")
 SELENO_LOGS_DIR = os.getenv("SELENO_LOGS_DIR")
 SELENO_DIR = os.getenv("SELENO_DIR")
+
+# User agents and user credentials to use randomly to avoid blacklisting
 USER_AGENTS = os.getenv("USER_AGENTS")
 DCE_CREDS = os.getenv("DCE_CREDS")
+
 
 LINES_PER_PAGE = "500"
 PORTAL_DDL_PAST_DAYS = 1 
@@ -56,7 +66,6 @@ REQ_TIMEOUT = 90
 DLD_TIMEOUT = 600
 
 LOG_TIME_FORMAT = '%d/%m-%H:%M:%S'
-
 
 PUDATE = "Date Publication"
 DDLINE = "Deadline"
