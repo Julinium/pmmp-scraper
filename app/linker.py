@@ -158,6 +158,7 @@ def getLinks(back_days=C.PORTAL_DDL_PAST_DAYS):
         links += page2Links(driver, i)
         try : next_page_button = driver.find_element(By.ID, "ctl0_CONTENU_PAGE_resultSearch_PagerTop_ctl2")
         except: next_page_button = None
+        
     if driver: driver.quit()
     
     if len(links) != int(count):

@@ -10,12 +10,15 @@ load_dotenv(dotenv_path=env_path)
 
 # More verbose output
 DEBUG_MODE = True 
-# Use Chromium without GUI. Set to True if running on a non-GUI system
-HEADLESS_MODE = True
+
 # Instead of scraping the target website for items links, use those previously saved in imports/links.csv
 IMPORT_LINKS = True
+
 # Check existing items against portal for changes.
-REFRESH_EXISTING = False    
+REFRESH_EXISTING = False
+
+# Skip downloading DCE files.
+SKIP_DCE = True
 
 
 # Initialize parser
@@ -25,15 +28,19 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--level', type=str, required=False, help='debug for more verbose output.')
 parser.add_argument('--links', type=str, required=False, help='import to use already saved links.')
 parser.add_argument('--found', type=str, required=False, help='refresh to refresh existing items.')
+parser.add_argument('--dce', type=str, required=False, help='DCE files download.')
 
 
 # Parse arguments
 args = parser.parse_args()
-DEBUG_MODE = args.level.lower() == 'debug'
-IMPORT_LINKS = args.links.lower() == "import"
-REFRESH_EXISTING = args.found.lower() == "refresh"
+if args.level: DEBUG_MODE = args.level.lower() == 'debug'
+if args.links: IMPORT_LINKS = args.links.lower() == "import"
+if args.found: REFRESH_EXISTING = args.found.lower() == "refresh"
+if args.dce: SKIP_DCE = args.dce.lower() != "download"
 
 
+# Use Chromium without GUI. Set to True if running on a non-GUI system
+HEADLESS_MODE = True
 
 # Target website. Held for privacy
 SITE_ROOT = os.getenv("SITE_ROOT")

@@ -1,5 +1,5 @@
 # pmmp-scraper
-This script aims to scrape the PMMP website and store cleaned data in a separate database.
+pmmp-scraper is a Python application aiming to scrape the PMMP website and store cleaned data in a separate database.
 It's intended for learning pusposes only.
 
 # Legal ?
@@ -15,6 +15,6 @@ This won't probably work out of the box. Because scraping depends on the target 
 # How to use ?
 1. Clone the repo, extract and cd...
 2. Setup your settings in .env file.
-3. Run crony/worker.sh --level debug --links crawl --found ignore 
+3. Run crony/worker.sh --level debug --links crawl --found ignore. 
 Please refer to app/setting.py for more info about the args.
 4. Optionally, setup a cron job to run the script periodically.

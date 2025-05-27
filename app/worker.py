@@ -101,18 +101,19 @@ for i, l in enumerate(links, start=1):
     else:
         helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.')
 
-    helper.printMessage('DEBUG', 'worker', f'Downloading DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
-    # dce_path = helper.getDcePath(l)
-    dce_files = []
-    if os.path.exists(dce_path) : dce_files = os.listdir(dce_path)
+    if not SKIP_DCE:
+        helper.printMessage('DEBUG', 'worker', f'Downloading DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
+        # dce_path = helper.getDcePath(l)
+        dce_files = []
+        if os.path.exists(dce_path) : dce_files = os.listdir(dce_path)
 
-    if len(dce_files) == 0:
-        rlc += 1
-        if dnlder.getDCE(l) == 0:
-            count_dce += 1
-            helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n\n')
-        else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n\n')
-    else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.\n\n')
+        if len(dce_files) == 0:
+            rlc += 1
+            if dnlder.getDCE(l) == 0:
+                count_dce += 1
+                helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n\n')
+            else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n\n')
+        else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.\n\n')
 
 
 if illacha == 0:
