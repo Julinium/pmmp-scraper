@@ -42,6 +42,9 @@ if args.dce: SKIP_DCE = args.dce.lower() != "download"
 # Use Chromium without GUI. Set to True if running on a non-GUI system
 HEADLESS_MODE = True
 
+# Number of pages to get links from: 0 = all.
+ONLY_N_PAGES = 2
+
 # Target website. Held for privacy
 SITE_ROOT = os.getenv("SITE_ROOT")
 SITE_INDEX = os.getenv("SITE_INDEX")
