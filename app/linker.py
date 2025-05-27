@@ -80,6 +80,7 @@ def exportLinks(links):
     # Return:
         full path to the exported csv file.
     """
+    
     file = ''
     if len(links) > 0 :
         try:

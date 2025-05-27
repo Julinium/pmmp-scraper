@@ -1,4 +1,4 @@
-import os, argparse
+import os, argparse, json
 from dotenv import load_dotenv
 from pathlib import Path
 
@@ -56,8 +56,12 @@ SELENO_DIR = os.getenv("SELENO_DIR")
 # User agents and user credentials to use randomly to avoid blacklisting
 # Example: USER_AGENTS = ['Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36', ...]
 # DCE_CREDS = [{'fname': 'john', 'lname': 'Doe', 'email': 'johndoe@fakemail.com'}, ...]
-USER_AGENTS = os.getenv("USER_AGENTS")
-DCE_CREDS = os.getenv("DCE_CREDS")
+ua_json = Path(__file__).resolve().parent.parent / '.env.ua.json'
+with open(ua_json) as f:
+    USER_AGENTS = json.load(f)
+creds_json = Path(__file__).resolve().parent.parent / '.env.creds.json'
+with open(ua_json) as g:
+    DCE_CREDS = json.load(g)
 
 
 LINES_PER_PAGE = "500"
