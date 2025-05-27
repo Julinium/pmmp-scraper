@@ -11,3 +11,10 @@ This application uses Chromium web browser and relies on Cron jobs to update dat
 
 # Scraping a different website ?
 This won't probably work out of the box. Because scraping depends on the target website technology and replies ...
+
+# How to use ?
+1. Clone the repo, extract and cd...
+2. Setup your settings in .env file.
+3. Run crony/worker.sh --level debug --links crawl --found ignore 
+Please refer to app/setting.py for more info about the args.
+4. Optionally, setup a cron job to run the script periodically.
