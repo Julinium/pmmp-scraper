@@ -274,30 +274,29 @@ def getDcePath(link_item):
     return os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{link_item[0]}')
 
 
-def rotateLogs(max_size=2, max_age_days=60):
-    stamp_format = "%Y%m%d%H%M%S%f"
-    log_file = f'{C.SELENO_LOGS_DIR}/browser.log'
-    if not os.path.exists(log_file): 
-        helper.printMessage('ERROR', 'helper.rotateLogs', f'Could not find {log_file}.') 
-        return 1
+# def rotateLogs(max_size=2, max_age_days=60):
+#     stamp_format = "%Y%m%d%H%M%S%f"
+#     log_file = f'{C.SELENO_LOGS_DIR}/browser.log'
+#     if not os.path.exists(log_file): 
+#         helper.printMessage('ERROR', 'helper.rotateLogs', f'Could not find {log_file}.') 
+#         return 1
 
-    helper.printMessage('DEBUG', 'helper.rotateLogs', '### Rotating log files ... ')
-    try: 
-        now = datetime.now()
-        new_stamp = now.strftime(stamp_format)
-        new_log_file_name = f'browser-{new_stamp}.log.archive'
-        new_log_file = f'{C.SELENO_LOGS_DIR}/{new_log_file_name}'
-        helper.printMessage('DEBUG', 'helper.rotateLogs', '# Checking current Log file size ... ')
-        if os.path.getsize(log_file) > 1000000 * max_size:
-            helper.printMessage('DEBUG', 'helper.rotateLogs', f'= Log file is larger than {max_size}M. Rotating ... ')
-            os.rename(log_file, new_log_file)
-            helper.printMessage('DEBUG', 'helper.rotateLogs', f'= Log file renamed as {new_log_file_name}.')
-        else: helper.printMessage('DEBUG', 'helper.rotateLogs', f'= Log file not larger than {max_size}M. Skipping.')
-        return 0
-    # TODO:
-    except Exception as xc:
-        helper.printMessage('ERROR', 'helper.rotateLogs', str(xc)) 
-    return 1
+#     helper.printMessage('DEBUG', 'helper.rotateLogs', '### Rotating log files ... ')
+#     try: 
+#         now = datetime.now()
+#         new_stamp = now.strftime(stamp_format)
+#         new_log_file_name = f'browser-{new_stamp}.log.archive'
+#         new_log_file = f'{C.SELENO_LOGS_DIR}/{new_log_file_name}'
+#         helper.printMessage('DEBUG', 'helper.rotateLogs', '# Checking current Log file size ... ')
+#         if os.path.getsize(log_file) > 1000000 * max_size:
+#             helper.printMessage('DEBUG', 'helper.rotateLogs', f'= Log file is larger than {max_size}M. Rotating ... ')
+#             os.rename(log_file, new_log_file)
+#             helper.printMessage('DEBUG', 'helper.rotateLogs', f'= Log file renamed as {new_log_file_name}.')
+#         else: helper.printMessage('DEBUG', 'helper.rotateLogs', f'= Log file not larger than {max_size}M. Skipping.')
+#         return 0
+#     except Exception as xc:
+#         helper.printMessage('ERROR', 'helper.rotateLogs', str(xc)) 
+#     return 1
 
 
 def getUa():
@@ -343,39 +342,37 @@ def cleanEmptyDceFiles(dry_run=True, base_folder=''):
     helper.printMessage('INFO', 'helper.cleanEmptyDceFiles', f"Subfolders scanned: {nd}, Files affected: {nf}")
 
 
-def addFileToZip(zip_path, file_path, arcname=None):
-    """
-    Adds a file to an existing ZIP archive without overwriting existing files.
+# def addFileToZip(zip_path, file_path, arcname=None):
+#     """
+#     Adds a file to an existing ZIP archive without overwriting existing files.
 
-    Parameters:
-    - zip_path: Path to the ZIP file.
-    - file_path: Path to the file to be added.
-    - arcname: Optional; name of the file in the archive.
-    """
-    try:
-        # Ensure the ZIP file exists
-        if not os.path.exists(zip_path):
-            raise FileNotFoundError(f"ZIP file '{zip_path}' not found.")
+#     Parameters:
+#     - zip_path: Path to the ZIP file.
+#     - file_path: Path to the file to be added.
+#     - arcname: Optional; name of the file in the archive.
+#     """
+#     try:
+#         # Ensure the ZIP file exists
+#         if not os.path.exists(zip_path):
+#             raise FileNotFoundError(f"ZIP file '{zip_path}' not found.")
 
-        if not arcname: arcname = os.path.basename(file_path)
+#         if not arcname: arcname = os.path.basename(file_path)
         
-        # Open the ZIP file in append mode
-        with zipfile.ZipFile(zip_path, 'a') as zipf:
-            # Determine the name to use inside the archive
-            archive_name = arcname or file_path
+#         # Open the ZIP file in append mode
+#         with zipfile.ZipFile(zip_path, 'a') as zipf:
+#             # Determine the name to use inside the archive
+#             archive_name = arcname or file_path
 
-            # Check if the file already exists in the archive
-            if archive_name in zipf.namelist():
-                helper.printMessage('ERROR', 'helper.addFileToZip', f"File '{archive_name}' already exists in the archive. Skipping...")
-                return
+#             # Check if the file already exists in the archive
+#             if archive_name in zipf.namelist():
+#                 helper.printMessage('ERROR', 'helper.addFileToZip', f"File '{archive_name}' already exists in the archive. Skipping...")
+#                 return
             
-            # Add the file to the archive
-            zipf.write(file_path, arcname=archive_name)
-            helper.printMessage('DEBUG', 'helper.addFileToZip', f"File '{file_path}' added to '{zip_path}' as '{archive_name}'.")
-    except FileNotFoundError as e:
-        helper.printMessage('ERROR', 'helper.addFileToZip', f"Error: {e}")
-    except Exception as e:
-        helper.printMessage('ERROR', 'helper.addFileToZip', f"n error occurred: : {e}")
-
-
+#             # Add the file to the archive
+#             zipf.write(file_path, arcname=archive_name)
+#             helper.printMessage('DEBUG', 'helper.addFileToZip', f"File '{file_path}' added to '{zip_path}' as '{archive_name}'.")
+#     except FileNotFoundError as e:
+#         helper.printMessage('ERROR', 'helper.addFileToZip', f"Error: {e}")
+#     except Exception as e:
+#         helper.printMessage('ERROR', 'helper.addFileToZip', f"n error occurred: : {e}")
 
