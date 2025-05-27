@@ -101,7 +101,9 @@ for i, l in enumerate(links, start=1):
     else:
         helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.')
 
-    if not SKIP_DCE:
+    if C.SKIP_DCE:
+        helper.printMessage('DEBUG', 'worker', f'Skipping DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
+    else:
         helper.printMessage('DEBUG', 'worker', f'Downloading DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
         # dce_path = helper.getDcePath(l)
         dce_files = []
