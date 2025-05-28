@@ -102,7 +102,7 @@ for i, l in enumerate(links, start=1):
         except Exception as xc:
             helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     else:
-        helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.')
+        helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.\n\n')
 
     if C.SKIP_DCE:
         helper.printMessage('DEBUG', 'worker', f'Settings: Skip DCE for item {i:04}/{links_count}, id = {portal_number} ... \n\n')
