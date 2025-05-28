@@ -6,20 +6,30 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # file_path="$SCRIPT_DIR/../folder/file"
 
 _now=$(date +"%Y%m%d-%H%M%S%z")
-_log="$SCRIPT_DIR/logs/browser.log"
-_lok="$SCRIPT_DIR/crony/.lock"
+_logs_dir="$SCRIPT_DIR/logs"
+_logs_file="$_logs_dir/browser.log"
+_crony_dir="$SCRIPT_DIR/crony"
+_lock_file="$_crony_dir/.lock"
 
-if test -e "$_lok"; then
-    echo "Execution prevented by a Lock file: $_lok"
+if test -e "$_lock_file"; then
+    mkdir -p $_crony_dir && touch $_lock_file
+fi
+
+if test -e "$_logs_file"; then
+    mkdir -p $_logs_dir && touch $_logs_file
+fi
+
+if test -e "$_lock_file"; then
+    echo "Execution prevented by a Lock file: $_lock_file"
     echo "Another script is probably running or did not finish as expected."
     echo "The lock file will be removed on next boot. It can also be removed manually."
 else
-    touch $_lok
-    $SCRIPT_DIR/.venv/bin/python $SCRIPT_DIR/app/worker.py "$@" >> "$_log"
+    touch $_lock_file
+    $SCRIPT_DIR/.venv/bin/python $SCRIPT_DIR/app/worker.py "$@" >> "$_logs_file"
     echo "Script finished executing. See logs and system journal for details."
-    if test -e "$_lok"; then
+    if test -e "$_lock_file"; then
         echo "Trying to remove Lock file after script finished."
-        rm -f -- $_lok
+        rm -f -- $_lock_file
     fi
 fi
 
