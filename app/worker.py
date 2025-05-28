@@ -102,10 +102,10 @@ for i, l in enumerate(links, start=1):
         except Exception as xc:
             helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     else:
-        helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.\n\n')
+        helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.\n')
 
     if C.SKIP_DCE:
-        helper.printMessage('DEBUG', 'worker', f'Settings: Skip DCE for item {i:04}/{links_count}, id = {portal_number} ... \n\n')
+        helper.printMessage('DEBUG', 'worker', f'Settings: Skip DCE for item {i:04}/{links_count}, id = {portal_number} ... \n')
     else:
         helper.printMessage('DEBUG', 'worker', f'Downloading DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
         dce_files = []
@@ -119,7 +119,7 @@ for i, l in enumerate(links, start=1):
                     helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n\n')
                 else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n\n')
             except Exception as xc: helper.printMessage('ERROR', 'worker', f'{str(xc)}')
-        else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.\n\n')
+        else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.\n')
 
 
 if illacha == 0:
@@ -175,5 +175,5 @@ formatted_duration = f"{hours:02}:{minutes:02}:{seconds:02}"
 helper.printMessage('INFO', 'worker', f'##### Consultations created ##### : {count_cons:06}.')
 helper.printMessage('INFO', 'worker', f'##### DCE files downloaded  ##### : {count_dce:06}.')
 if dce_cleaner_started : helper.printMessage('INFO', 'worker', f'##### DCE folders deleted   ##### : {dce_cleaned:06}.')
-helper.printMessage('INFO', 'worker', f'##### Operation finished in ##### : {formatted_duration}.\n\n\n')
+helper.printMessage('INFO', 'worker', f'##### Operation finished in ##### : {formatted_duration}.\n\n')
 
