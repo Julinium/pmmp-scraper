@@ -117,8 +117,8 @@ for i, l in enumerate(links, start=1):
                 rlc += 1
                 if dnlder.getDCE(l) == 0:
                     count_dce += 1
-                    helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n\n')
-                else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n\n')
+                    helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.')
+                else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.')
             except Exception as xc: helper.printMessage('ERROR', 'worker', f'{str(xc)}')
         else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.')
 
