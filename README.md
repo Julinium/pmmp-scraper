@@ -32,7 +32,7 @@ Please refer to app/setting.py for more info about the args.
     DB_USER = "dbuser"
     DB_PASS = "$trongP@ssw0rd-999"
 
-    MEDIA_ROOT  = '/var/opt/path/to/media' # Preferably absolute paths
+    MEDIA_ROOT  = '/var/opt/path/to/media' # Preferably absolute paths. Make sure they exist and are writeable.
     SELENO_DIR = '/var/opt/main/path'
 
 2. .env.creds.json: # Credentials to use to download DCE files. Use as many as possible. They are randomly shuffled.
