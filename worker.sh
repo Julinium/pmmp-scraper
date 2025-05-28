@@ -11,11 +11,11 @@ _logs_file="$_logs_dir/browser.log"
 _crony_dir="$SCRIPT_DIR/crony"
 _lock_file="$_crony_dir/.lock"
 
-if test -e "$_lock_file"; then
-    mkdir -p $_crony_dir && touch $_lock_file
+if ! [ -d "$_crony_dir" ]; then
+    mkdir -p $_crony_dir
 fi
 
-if test -e "$_logs_file"; then
+if ! test -e "$_logs_file"; then
     mkdir -p $_logs_dir && touch $_logs_file
 fi
 
