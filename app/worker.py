@@ -130,11 +130,14 @@ else:
 
 
 ######################## MISSING FILES ########################
-helper.printMessage('INFO', 'worker', 'Getting missing DCE files...\n')
-cor = dnlder.getMissingDCE(session)
-count_dce += cor[3]
-if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.\n')
-helper.printMessage('INFO', 'worker', f'========== Missing files results: errors={cor[0]}, checked={cor[1]}, skipped={cor[2]}, corrected={cor[3]}, failed={cor[4]}.\n')
+if C.SKIP_DCE:
+    helper.printMessage('INFO', 'worker', 'Settings: Skip missing DCE files...\n')
+else:
+    helper.printMessage('INFO', 'worker', 'Getting missing DCE files...\n')
+    cor = dnlder.getMissingDCE(session)
+    count_dce += cor[3]
+    if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.\n')
+    helper.printMessage('INFO', 'worker', f'========== Missing files results: errors={cor[0]}, checked={cor[1]}, skipped={cor[2]}, corrected={cor[3]}, failed={cor[4]}.\n')
 
 
 
