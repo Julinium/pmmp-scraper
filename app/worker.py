@@ -73,13 +73,10 @@ for i, l in enumerate(links, start=1):
                         consino = None
                     helper.printMessage('DEBUG', 'worker', f'Item files needs update. Deleting id = {portal_number} and files ...')
                     folder_path = os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{portal_number}')
-                    # backup_path = folder_path + "_backup_" + time.strftime("%Y%m%d%H%M%S")
                     if os.path.exists(folder_path):
                         try:
                             shutil.rmtree(folder_path)
                             helper.printMessage('DEBUG', 'worker', f'Folder successfully removed {C.DL_PATH_PREFIX}{portal_number}.')
-                            # os.rename(folder_path, backup_path)
-                            # helper.printMessage('DEBUG', 'worker', f'Folder successfully renamed as {backup_path}.')
                         except Exception as sx:
                             helper.printMessage('ERROR', 'worker', f'{str(sx)}')
                 helper.printMessage('INFO', 'worker', f'No changes were detected for id = {portal_number}. Skipping.')
@@ -123,11 +120,6 @@ if illacha == 0:
     dbaser.updateUpdateTime(session)
 else:
     helper.printMessage('ERROR', 'worker', '========== Something went wrong while saving objects to database.\n')
-
-
-# TODO: Align database to Portal:
-# For each item in database, read the Portal entry to check if something has changed meanwhile.
-# Do it once a day?
 
 
 ######################## MISSING FILES ########################
