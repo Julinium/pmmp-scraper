@@ -219,14 +219,23 @@ def getConsObject(link_item):
     if request_cons.status_code != 200 : 
         helper.printMessage('ERROR', 'objeer.getConsObject', f'Request to Cons page returned a {request_cons.status_code} status code.')
         if request_cons.status_code == 429:
-            helper.printMessage('ERROR', 'objeer.getObject', f'Too many Requests, said the server: {request_cons.status_code} !')
+            helper.printMessage('ERROR', 'objeer.getConsObject', f'Too many Requests, said the server: {request_cons.status_code} !')
             helper.sleepRandom(300, 600)
         return None
               
     bowl = BeautifulSoup(request_cons.text, 'html.parser')
-
+    if C.DEBUG_MODE:
+        if not bowl:
+            print("\n\n\n==============================[[ DEBUG >> =============================")
+            print("BeautifulSoup(request_cons.text, 'html.parser') was of NoneType!")
+            print("========== START request_cons.text")
+            print(request_cons.text)
+            print("========== END request_cons.text")
+            print("============================== << DEBUG ]]=============================\n\n\n")
+    
+    
     soup = bowl.find(class_='recap-bloc')
-
+    
     cons_idddd = link_item[0].strip()
     cons_pub_d = link_item[2].strip()
 
