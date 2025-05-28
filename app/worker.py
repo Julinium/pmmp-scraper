@@ -81,7 +81,7 @@ for i, l in enumerate(links, start=1):
                                 helper.printMessage('DEBUG', 'worker', f'Folder successfully removed {C.DL_PATH_PREFIX}{portal_number}.')
                             except Exception as sx:
                                 helper.printMessage('ERROR', 'worker', f'{str(sx)}')
-                    helper.printMessage('INFO', 'worker', f'No changes were detected for id = {portal_number}. Skipping.')
+                    else: helper.printMessage('INFO', 'worker', f'No changes were detected for id = {portal_number}. Skipping.')
             except Exception as xc:
                 helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     
