@@ -68,7 +68,7 @@ with open(ua_json) as f:
     USER_AGENTS = json.load(f)
     
 creds_json = Path(__file__).resolve().parent.parent / '.env.creds.json'
-with open(ua_json) as g:
+with open(creds_json) as g:
     DCE_CREDS = json.load(g)
 
 
