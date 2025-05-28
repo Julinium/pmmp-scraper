@@ -105,10 +105,9 @@ for i, l in enumerate(links, start=1):
         helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.')
 
     if C.SKIP_DCE:
-        helper.printMessage('DEBUG', 'worker', f'Skipping DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
+        helper.printMessage('DEBUG', 'worker', f'Settings: Skip DCE for item {i:04}/{links_count}, id = {portal_number} ... \n\n')
     else:
         helper.printMessage('DEBUG', 'worker', f'Downloading DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
-        # dce_path = helper.getDcePath(l)
         dce_files = []
         if os.path.exists(dce_path) : dce_files = os.listdir(dce_path)
 
