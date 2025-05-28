@@ -64,37 +64,43 @@ for i, l in enumerate(links, start=1):
         helper.printMessage('DEBUG', 'worker', f'Found item with id = {portal_number}.')
         if C.REFRESH_EXISTING:
             helper.printMessage('DEBUG', 'worker', f'Checking existing item for change, id = {portal_number}.')
-            cons_dict = objeer.getConsObject(l)
-            if cons_dict:
-                if dbaser.hasChanged(cons_dict, consino, session) == 1:
-                    helper.printMessage('INFO', 'worker', f'Changes detected for id = {portal_number}. To refresh.')
-                    if dbaser.deleteCons(portal_number, session) == 0:
-                        helper.printMessage('DEBUG', 'worker', f'Successfully deleted related objects for id = {portal_number}.')
-                        consino = None
-                    helper.printMessage('DEBUG', 'worker', f'Item files needs update. Deleting id = {portal_number} and files ...')
-                    folder_path = os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{portal_number}')
-                    if os.path.exists(folder_path):
-                        try:
-                            shutil.rmtree(folder_path)
-                            helper.printMessage('DEBUG', 'worker', f'Folder successfully removed {C.DL_PATH_PREFIX}{portal_number}.')
-                        except Exception as sx:
-                            helper.printMessage('ERROR', 'worker', f'{str(sx)}')
-                helper.printMessage('INFO', 'worker', f'No changes were detected for id = {portal_number}. Skipping.')
+            try:
+                cons_dict = objeer.getConsObject(l)
+                if cons_dict:
+                    if dbaser.hasChanged(cons_dict, consino, session) == 1:
+                        helper.printMessage('INFO', 'worker', f'Changes detected for id = {portal_number}. To refresh.')
+                        if dbaser.deleteCons(portal_number, session) == 0:
+                            helper.printMessage('DEBUG', 'worker', f'Successfully deleted related objects for id = {portal_number}.')
+                            consino = None
+                        helper.printMessage('DEBUG', 'worker', f'Item files needs update. Deleting id = {portal_number} and files ...')
+                        folder_path = os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{portal_number}')
+                        if os.path.exists(folder_path):
+                            try:
+                                shutil.rmtree(folder_path)
+                                helper.printMessage('DEBUG', 'worker', f'Folder successfully removed {C.DL_PATH_PREFIX}{portal_number}.')
+                            except Exception as sx:
+                                helper.printMessage('ERROR', 'worker', f'{str(sx)}')
+                    helper.printMessage('INFO', 'worker', f'No changes were detected for id = {portal_number}. Skipping.')
+            except Exception as xc:
+                helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     
 
     if consino == None:
         helper.printMessage('DEBUG', 'worker', f'Reading objects for link {i:04}/{links_count}: id = {portal_number} ...')
-        cons_dict = objeer.getConsObject(l)
-        rlc += 1
-        if cons_dict:
-            helper.printMessage('DEBUG', 'worker', 'Successfully read objects for link. Saving to database ... ')
-            if dbaser.writeData(cons_dict, session) == 0: 
-                count_cons += 1
-                helper.printMessage('INFO', 'worker', '===== Objects saved successfully for link.')
-            else: helper.printMessage('ERROR', 'worker', f'===== Errors occurred while saving objects for link {i:04}/{links_count}: id = {portal_number} ...')
-        else:
-            illacha += 1
-            helper.printMessage('ERROR', 'worker', ' Something went wrong while reading objects.')
+        try:
+            cons_dict = objeer.getConsObject(l)
+            rlc += 1
+            if cons_dict:
+                helper.printMessage('DEBUG', 'worker', 'Successfully read objects for link. Saving to database ... ')
+                if dbaser.writeData(cons_dict, session) == 0: 
+                    count_cons += 1
+                    helper.printMessage('INFO', 'worker', '===== Objects saved successfully for link.')
+                else: helper.printMessage('ERROR', 'worker', f'===== Errors occurred while saving objects for link {i:04}/{links_count}: id = {portal_number} ...')
+            else:
+                illacha += 1
+                helper.printMessage('ERROR', 'worker', ' Something went wrong while reading objects.')
+        except Exception as xc:
+            helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     else:
         helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.')
 
@@ -107,11 +113,13 @@ for i, l in enumerate(links, start=1):
         if os.path.exists(dce_path) : dce_files = os.listdir(dce_path)
 
         if len(dce_files) == 0:
-            rlc += 1
-            if dnlder.getDCE(l) == 0:
-                count_dce += 1
-                helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n\n')
-            else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n\n')
+            try:
+                rlc += 1
+                if dnlder.getDCE(l) == 0:
+                    count_dce += 1
+                    helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n\n')
+                else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n\n')
+            exceptException as xc: helper.printMessage('ERROR', 'worker', f'{str(xc)}')
         else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.\n\n')
 
 
