@@ -3,7 +3,6 @@
 echo "JOB STARTED ||||||||||||||||||||"
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# file_path="$SCRIPT_DIR/../folder/file"
 
 _now=$(date +"%Y%m%d-%H%M%S%z")
 _logs_dir="$SCRIPT_DIR/logs"
