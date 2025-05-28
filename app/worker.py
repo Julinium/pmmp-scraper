@@ -53,6 +53,7 @@ for i, l in enumerate(links, start=1):
         rlc = 0
 
     portal_number = l[0]
+    print("\n\n")
     helper.printMessage('INFO', 'worker', f'##### Working on link {i:04}/{links_count}: id = {portal_number} ...')
 
 
@@ -102,10 +103,10 @@ for i, l in enumerate(links, start=1):
         except Exception as xc:
             helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     else:
-        helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.\n')
+        helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.')
 
     if C.SKIP_DCE:
-        helper.printMessage('DEBUG', 'worker', f'Settings: Skip DCE for item {i:04}/{links_count}, id = {portal_number} ... \n')
+        helper.printMessage('DEBUG', 'worker', f'Settings: Skip DCE for item {i:04}/{links_count}, id = {portal_number} ... ')
     else:
         helper.printMessage('DEBUG', 'worker', f'Downloading DCE for item {i:04}/{links_count}: id = {portal_number} ... ')
         dce_files = []
@@ -119,25 +120,26 @@ for i, l in enumerate(links, start=1):
                     helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n\n')
                 else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n\n')
             except Exception as xc: helper.printMessage('ERROR', 'worker', f'{str(xc)}')
-        else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.\n')
+        else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.')
 
 
 if illacha == 0:
-    helper.printMessage('INFO', 'worker', '========== Successfully saved objects.\n')
+    helper.printMessage('INFO', 'worker', '========== Successfully saved objects.')
     dbaser.updateUpdateTime(session)
 else:
-    helper.printMessage('ERROR', 'worker', '========== Something went wrong while saving objects to database.\n')
+    helper.printMessage('ERROR', 'worker', '========== Something went wrong while saving objects to database.')
 
 
 ######################## MISSING FILES ########################
+print("\n\n")
 if C.SKIP_DCE:
-    helper.printMessage('INFO', 'worker', 'Settings: Skip missing DCE files...\n')
+    helper.printMessage('INFO', 'worker', 'Settings: Skip missing DCE files...')
 else:
-    helper.printMessage('INFO', 'worker', 'Getting missing DCE files...\n')
+    helper.printMessage('INFO', 'worker', 'Getting missing DCE files...')
     cor = dnlder.getMissingDCE(session)
     count_dce += cor[3]
-    if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.\n')
-    helper.printMessage('INFO', 'worker', f'========== Missing files results: errors={cor[0]}, checked={cor[1]}, skipped={cor[2]}, corrected={cor[3]}, failed={cor[4]}.\n')
+    if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.')
+    helper.printMessage('INFO', 'worker', f'=== Missing files: Checked={cor[1]}, Errors={cor[0]}, Skipped={cor[2]}, Corrected={cor[3]}, Failed={cor[4]}.\n')
 
 
 
