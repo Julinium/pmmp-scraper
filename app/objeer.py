@@ -226,25 +226,25 @@ def getConsObject(link_item):
     bowl = BeautifulSoup(request_cons.text, 'html.parser')
     
     if C.DEBUG_MODE:
-        # if not bowl:
-        print("\n\n\n==============================[[ DEBUG >> =============================")
-        print("bowl = BeautifulSoup(request_cons.text, 'html.parser') was of NoneType!")
-        print("========== START bowl")
-        print(bowl)
-        print("========== END bowl")
-        print("============================== << DEBUG ]]=============================\n\n\n")
+        if not bowl:
+            print("\n\n\n==============================[[ DEBUG >> =============================")
+            print("bowl = BeautifulSoup(request_cons.text, 'html.parser') was of NoneType!")
+            print("========== START bowl")
+            print(bowl)
+            print("========== END bowl")
+            print("============================== << DEBUG ]]=============================\n\n\n")
     
-    
+
     soup = bowl.find(class_='recap-bloc')
     
     if C.DEBUG_MODE:
-        # if not bowl:
-        print("\n\n\n==============================[[ DEBUG >> =============================")
-        print("soup = bowl.find(class_='recap-bloc')")
-        print("========== START soup")
-        print(soup)
-        print("========== END soup")
-        print("============================== << DEBUG ]]=============================\n\n\n")
+        if not soup:
+            print("\n\n\n==============================[[ DEBUG >> =============================")
+            print("soup = bowl.find(class_='recap-bloc')")
+            print("========== START soup")
+            print(soup)
+            print("========== END soup")
+            print("============================== << DEBUG ]]=============================\n\n\n")
     
     cons_idddd = link_item[0].strip()
     cons_pub_d = link_item[2].strip()
