@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 _now=$(date +"%Y%m%d-%H%M%S%z")
 _logs_dir="$SCRIPT_DIR/logs"
-_logs_file="$_logs_dir/browser.log"
+_logs_file="$_logs_dir/seleno-%Y%m%d-%H%M%S.log"
 _crony_dir="$SCRIPT_DIR/crony"
 _lock_file="$_crony_dir/.lock"
 
