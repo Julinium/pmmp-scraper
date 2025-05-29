@@ -42,7 +42,7 @@ Please refer to app/setting.py for more info about the args.
         {"fname": "Jean", "lname": "Dupont", "email": "jean@dupont"}
     ]
 
-3. .env.ua.json: # User-agents strings to use to navigate the target website. Use as many as possible. They are randomly shuffled.
+3. .env.ua.json: # User-agents strings to use to navigate the target website. Use as many as possible. DO NOT include modile devices. They are randomly shuffled.
     [
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36",
         ...
