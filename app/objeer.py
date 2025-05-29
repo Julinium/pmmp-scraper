@@ -11,25 +11,25 @@ import settings as C
 def getLotsObject(lots_href):
     helper.printMessage('DEBUG', 'objeer.getJson', 'Item is multi-lot. Reading lots ... ')
     lots_link = C.SITE_INDEX + lots_href.replace("javascript:popUp('index.php", "").replace("%27,%27yes%27)", "")
-    
+
     rua = helper.getUa()
     helper.printMessage('DEBUG', 'objeer.getObject', f'Using UA: {rua}.')
     headino = {"User-Agent": rua }
 
     sessiono = requests.Session()
-    
+
     try: request_lots = sessiono.get(lots_link, headers=headino, timeout=C.REQ_TIMEOUT)  # driver.get(lots_link)
     except Exception as x:
         helper.printMessage('ERROR', 'objeer.getObject', f'Exception raised while getting lots at {str(lots_link)}: {str(x)}')
         return None
     helper.printMessage('DEBUG', 'objeer.getObject', f'Getting Lots page : {request_lots}')
-    if request_lots.status_code != 200 : 
+    if request_lots.status_code != 200 :
         helper.printMessage('ERROR', 'objeer.getObject', f'Request to Lots page returned a {request_lots.status_code} status code.')
         if request_lots.status_code == 429:
             helper.printMessage('ERROR', 'objeer.getObject', f'Too many Requests, said the server: {request_lots.status_code} !')
             helper.sleepRandom(300, 600)
         return None
-        
+
     bowl = BeautifulSoup(request_lots.text, 'html.parser')
 
     soup = bowl.find(class_='content')
@@ -57,11 +57,11 @@ def getLotsObject(lots_href):
             # Category
             category_elem = title_elem.find_next_sibling("div", class_="content-bloc bloc-600")
             category = category_elem.get_text().strip() if category_elem else ""
-            
+
             # Extract Description
             description_elem = category_elem.find_next_sibling("div", class_="content-bloc bloc-600")
             description = description_elem.get_text().strip() if description_elem else ""
-            
+
             # Estimation
             div_id  = f'ctl0_CONTENU_PAGE_repeaterLots_ctl{i}_idReferentielZoneTextLot_RepeaterReferentielZoneText_ctl0_panelReferentielZoneText'
             span_id = f'ctl0_CONTENU_PAGE_repeaterLots_ctl{i}_idReferentielZoneTextLot_RepeaterReferentielZoneText_ctl0_labelReferentielZoneText'
@@ -112,7 +112,7 @@ def getLotsObject(lots_href):
                     sample_date = sample_spans[0].get_text().strip() if sample_spans[0] else ""
                     sample_lieu = sample_spans[1].get_text().strip() if sample_spans[1] else ""
                     sample = {
-                        C.RVDATE: re.sub(r'\s+', ' ', sample_date).strip(), 
+                        C.RVDATE: re.sub(r'\s+', ' ', sample_date).strip(),
                         C.RVLIEU: re.sub(r'\s+', ' ', sample_lieu).strip(),
                         }
                 samples.append(sample)
@@ -143,11 +143,11 @@ def getLotsObject(lots_href):
                     visit_date = visit_spans[0].get_text().strip() if visit_spans[0] else ""
                     visit_lieu = visit_spans[1].get_text().strip() if visit_spans[1] else ""
                     visit = {
-                        C.RVDATE: re.sub(r'\s+', ' ', visit_date).strip(), 
+                        C.RVDATE: re.sub(r'\s+', ' ', visit_date).strip(),
                         C.RVLIEU: re.sub(r'\s+', ' ', visit_lieu).strip(),
                         }
                 visits.append(visit)
-            
+
 
             # Variante
             div_id  = f'ctl0_CONTENU_PAGE_repeaterLots_ctl{i}_panelVariante'
@@ -155,7 +155,7 @@ def getLotsObject(lots_href):
             variante_div  = visits_div.find_next_sibling("div", id=div_id)
             variante_span = variante_div.find("div", class_="content-bloc bloc-600")
             variante = variante_span.get_text().strip() if variante_span else ""
-            
+
 
             # ReservePME
             div_id  = f'ctl0_CONTENU_PAGE_repeaterLots_ctl{i}_idRefRadio_RepeaterReferentielRadio_ctl0_panelReferentielRadio'
@@ -163,7 +163,7 @@ def getLotsObject(lots_href):
             pme_div  = variante_div.find_next_sibling("div", id=div_id)
             pme_span = pme_div.find('span', id=span_id)
             pme = pme_span.get_text().strip() if pme_span else ""
-                
+
 
             # Store extracted data for current lot
 
@@ -202,50 +202,32 @@ def getConsObject(link_item):
         helper.printMessage('ERROR', 'objeer.getConsObject', 'Got an invalid link item.')
         return None
     helper.printMessage('DEBUG', 'objeer.getConsObject', f'Getting objects for item id = {link_item[0]}')
-    
+
     cons_link = f'{C.LINK_PREFIX}{link_item[0]}{C.LINK_STITCH}{link_item[1]}'
 
     rua = helper.getUa()
     helper.printMessage('DEBUG', 'objeer.getConsObject', f'Using UA: {rua}.')
     headino = {"User-Agent": rua }
 
-    sessiono = requests.Session()        
-    
+    sessiono = requests.Session()
+
     try: request_cons = sessiono.get(cons_link, headers=headino, timeout=C.REQ_TIMEOUT)  # driver.get(lots_link)
     except Exception as x:
         helper.printMessage('ERROR', 'objeer.getConsObject', f'Exception raised while getting lots at {str(cons_link)}: {str(x)}')
         return None
     helper.printMessage('DEBUG', 'objeer.getConsObject', f'Getting Cons page : {request_cons}')
-    if request_cons.status_code != 200 : 
+    if request_cons.status_code != 200 :
         helper.printMessage('ERROR', 'objeer.getConsObject', f'Request to Cons page returned a {request_cons.status_code} status code.')
         if request_cons.status_code == 429:
             helper.printMessage('ERROR', 'objeer.getConsObject', f'Too many Requests, said the server: {request_cons.status_code} !')
             helper.sleepRandom(300, 600)
         return None
-              
+
     bowl = BeautifulSoup(request_cons.text, 'html.parser')
-    
-    if C.DEBUG_MODE:
-        if not bowl:
-            print("\n\n\n==============================[[ DEBUG >> =============================")
-            print("bowl = BeautifulSoup(request_cons.text, 'html.parser') was of NoneType!")
-            print("========== START bowl")
-            print(bowl)
-            print("========== END bowl")
-            print("============================== << DEBUG ]]=============================\n\n\n")
-    
+
 
     soup = bowl.find(class_='recap-bloc')
-    
-    if C.DEBUG_MODE:
-        if not soup:
-            print("\n\n\n==============================[[ DEBUG >> =============================")
-            print("soup = bowl.find(class_='recap-bloc')")
-            print("========== START soup")
-            print(soup)
-            print("========== END soup")
-            print("============================== << DEBUG ]]=============================\n\n\n")
-    
+
     cons_idddd = link_item[0].strip()
     cons_pub_d = link_item[2].strip()
 
@@ -349,7 +331,7 @@ def getConsObject(link_item):
     cons_reu_a = reu_a_span.get_text().strip() if reu_a_span else ""
     if len(cons_reu_d) > 3 or len(cons_reu_a) > 3 : cons_reuni.append({C.RVDATE: cons_reu_d, C.RVLIEU: cons_reu_a})
 
-    # Visits # 
+    # Visits #
     cons_visit = []
     vis_d_span = soup.find('span', id='ctl0_CONTENU_PAGE_idEntrepriseConsultationSummary_repeaterVisitesLieux_ctl1_dateVisites')
     cons_vis_d = vis_d_span.get_text().strip() if vis_d_span else ""
@@ -379,7 +361,7 @@ def getConsObject(link_item):
     if lots_span and lots_span.has_attr('href'): lots_href = lots_span['href']
 
     # cons_lots = []
-    if len(lots_href) > 2: 
+    if len(lots_href) > 2:
         cons_lots = getLotsObject(lots_href)
     else:
         cons_lots = [
