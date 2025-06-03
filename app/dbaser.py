@@ -118,6 +118,8 @@ def writeData(dicto, session):
     """
 
     total_esti, total_caut = 0, 0
+    l_requires_qua, l_requires_agr, l_requires_ech, l_has_reu, l_has_vis = None, None, None, None, None,
+    total_qua, total_agr, total_ech, total_reu, total_vis = 0, 0, 0, 0, 0
 
     # Check if Consultation already exists.
     p_id = dicto[C.IDENTI]
@@ -265,8 +267,7 @@ def writeData(dicto, session):
         portal_id=p_id,
         portal_link=dicto[C.LINKKK],
         portal_size = dicto[C.DCESIZ],
-        update_me = False,
-        # created_on=datetime.now(timezone.utc),
+        created_on=datetime.now(timezone.utc),
     )
 
     # Lots Objects
@@ -373,14 +374,27 @@ def writeData(dicto, session):
             # Agrements and Qualifications relation tables
             for a in agrements: session.add(LotAgrement(id=uuid.uuid4(), agrement_id=a.id, lot_id=lot.id))
             for q in qualifs: session.add(LotQualification(id=uuid.uuid4(), qualification_id=q.id, lot_id=lot.id))
+            
+            total_agr += len(agrements)
+            total_qua += len(qualifs)
+            total_ech += len(l_echantis)
+            total_reu += len(l_reunions)
+            total_vis += len(l_visites)
+            
 
             helper.printMessage('DEBUG', 'dbaser.writeData', f'Created Lot: {lot.objet[:C.TRUNCA]}...')
     else:
         helper.printMessage('ERROR', 'dbaser.writeData', f'Dictionary had no Lots !')
         
     # Update consultation with Lot data
-    consultation.total_estimation = total_esti
+    consultation.total_estimation   = total_esti
     consultation.caution_provisoire = total_caut
+    consultation.requires_qua       = total_qua > 0
+    consultation.requires_agr       = total_agr > 0
+    consultation.requires_ech       = total_ech > 0
+    consultation.has_reu            = total_reu > 0
+    consultation.has_vis            = total_vis > 0
+    
     session.add(consultation)
     helper.printMessage('DEBUG', 'dbaser.writeData', f'Created Consultation: {consultation.objet[:C.TRUNCA]}...')
 
