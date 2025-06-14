@@ -24,7 +24,7 @@ else:
         helper.printMessage('INFO', 'worker', '############### 01.01. Exporting links list to local file ...')
         links_file = linker.exportLinks(links)
         if links_file == '': helper.printMessage('ERROR', 'worker', '====== Something went wrong when exporting links.')
-        else: helper.printMessage('INFO', 'worker', f'================== Links exported to {links_file}.')
+        else: helper.printMessage('INFO', 'worker', f'================== Links exported to csv file.')
 if len(links) == 0:
     helper.printMessage('ERROR', 'worker', 'Links list was empty. Aborting.')
     exit(1)

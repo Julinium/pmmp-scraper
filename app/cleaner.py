@@ -31,21 +31,21 @@ def removeOldDce(session, dry_run=dry_run):
                 try:
                     shutil.rmtree(dce_directory_path)
                     dl += 1
-                    helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'--- Successfully removed: {dce_directory_path}')
-                except FileNotFoundError: # print("Directory does not exist.")
-                    helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'--- Directory not find: {dce_directory_path}')
+                    helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'--- Successfully removed: {folder_name}')
+                except FileNotFoundError:
+                    helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'--- Directory not find: {folder_name}')
                     el += 1
-                except PermissionError: # print("Permission denied.")
-                    helper.printMessage('ERROR', 'cleaner.removeOldDce', f'--- Permission denied for: {dce_directory_path}')
+                except PermissionError:
+                    helper.printMessage('ERROR', 'cleaner.removeOldDce', f'--- Permission denied for: {folder_name}')
                     el += 1
-                except OSError as e: # print(f"OS error: {e}")
-                    helper.printMessage('ERROR', 'cleaner.removeOldDce', f'--- OS error occurred for: {dce_directory_path}')
+                except OSError as e:
+                    helper.printMessage('ERROR', 'cleaner.removeOldDce', f'--- OS error occurred for: {folder_name}')
                     helper.printMessage('ERROR', 'cleaner.removeOldDce', f'--- OS error details: {e}')
                     el += 1
             else:
-                helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'--- DRY-RUN removed: {dce_directory_path}')
+                helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'--- DRY-RUN removed: {folder_name}')
         else:
-            helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'### Path may not be a valid directory: {dce_directory_path}')
+            helper.printMessage('DEBUG', 'cleaner.removeOldDce', f'### Path may not be a valid directory: {folder_name}')
             sl += 1
     print("\n\n")
     helper.printMessage('INFO', 'cleaner.removeOldDce', f'### Obsolete items: Deleted={dl}, Skipped={sl}, Failures={el}')
