@@ -124,6 +124,7 @@ for i, l in enumerate(links, start=1):
 
 
 if illacha == 0:
+    print("\n\n\n")
     helper.printMessage('INFO', 'worker', '========== Successfully saved objects.')
     dbaser.updateUpdateTime(session)
 else:
@@ -131,7 +132,7 @@ else:
 
 
 ######################## MISSING FILES ########################
-print("\n\n")
+print("\n\n\n")
 if C.SKIP_DCE:
     helper.printMessage('INFO', 'worker', 'Settings: Skip missing DCE files...')
 else:
