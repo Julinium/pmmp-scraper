@@ -1,5 +1,6 @@
 import os, csv, random, time, pytz, zipfile, re, unicodedata
 from datetime import datetime, timezone
+from decimal import Decimal, InvalidOperation
 
 from selenium import webdriver
 from sqlalchemy import create_engine
@@ -26,7 +27,57 @@ def printMessage(level='INFO', raiser='', message='!!! Empty Message !!!'):
         print(f'[{datetime.now(timezone.utc).strftime(C.LOG_TIME_FORMAT)}][{level}][{raiser}] {message}')
 
 
-def money2Float(texte):
+def money2float(texte: str) -> Decimal:
+    """
+    Converts a string containing a monetary amount to a Decimal.
+
+    Args:
+        texte: The text containing the amount (e.g., "1,234.56 DH", "123,123,45").
+
+    Returns:
+        Decimal: The parsed monetary value.
+        Decimal('0'): For empty strings, "-", or "--".
+        Decimal('-1'): If conversion fails.
+    """
+    if not texte or texte.strip() == "" or texte == "-":
+        return Decimal('0')
+    if "--" in texte:
+        return Decimal('0')
+
+    try:
+        # Normalize input
+        f = texte.strip().replace("\u202f", "").replace("\u00a0", "").replace(" ", "")
+        f = f.replace("DH", "").replace("MAD", "").replace("TTC", "")
+
+        # Handle fractions
+        if "/" in f:
+            f = f.split("/")[0]
+        if "par" in f:
+            f = f.split("par")[0]
+
+        # Normalize separators
+        if "," in f and "." in f:
+            # Assume last ',' or '.' is decimal separator
+            parts = f.rsplit(",", 1) if f.rfind(",") > f.rfind(".") else f.rsplit(".", 1)
+            f = "".join(parts[0].replace(",", "").replace(".", "") + "." + parts[1])
+        elif "," in f:
+            # Handle multiple commas (e.g., "123,123,45" → "123123.45")
+            parts = f.rsplit(",", 1)
+            f = parts[0].replace(",", "") + "." + parts[1] if len(parts) == 2 else f.replace(",", ".")
+        elif "." in f:
+            # Handle multiple periods (e.g., "123.567.00" → "123567.00")
+            parts = f.rsplit(".", 1)
+            f = parts[0].replace(".", "") + "." + parts[1] if len(parts) == 2 else f
+
+        # Convert to Decimal
+        return Decimal(f.strip())
+    except (InvalidOperation, ValueError) as x:
+        printMessage('ERROR', 'helper.money2Float', f'Something went wrong while converting string ({texte}) to float. Amount is set to 0')
+        printMessage('ERROR', 'helper.money2Float', str(x))
+        return Decimal('-1')
+
+
+def x_money2Float(texte):
     """
     # Synopsis:
     Converts a string (supposedly) containing an amount of money to a float number.
