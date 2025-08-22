@@ -77,39 +77,39 @@ def money2float(texte: str) -> Decimal:
         return Decimal('-1')
 
 
-def x_money2Float(texte):
-    """
-    # Synopsis:
-    Converts a string (supposedly) containing an amount of money to a float number.
+# def x_money2Float(texte):
+#     """
+#     # Synopsis:
+#     Converts a string (supposedly) containing an amount of money to a float number.
 
-    # Params:
-        # texte: The text containing the amount of money.
+#     # Params:
+#         # texte: The text containing the amount of money.
     
-    # Return:
-        -1 if something went wrong, 0 or a float otherwise.
-    """
+#     # Return:
+#         -1 if something went wrong, 0 or a float otherwise.
+#     """
 
-    if texte.strip() == '' or texte == '-':
-        return 0
-    if texte.find('--') != -1:
-        return 0
-    try:
-        f = texte.replace(" ", "")
-        f = f.replace("DH", "")
-        f = f.replace("MAD", "")
-        f = f.replace('TTC', '')
-        if '/' in f:
-            f = f.split('/')[0]
-        if '.' in f and ',' in f:
-            if f.find(',') > f.find('.'):
-                f = f.replace(".", "")
-        f = f.replace(",", ".")
-        f = f.replace('\u202f', '')
-        return float(f)
-    except Exception as x:
-        printMessage('ERROR', 'helper.money2Float', f'Something went wrong while converting string ({texte}) to float. Amount is set to 0')
-        printMessage('ERROR', 'helper.money2Float', str(x))
-        return -1
+#     if texte.strip() == '' or texte == '-':
+#         return 0
+#     if texte.find('--') != -1:
+#         return 0
+#     try:
+#         f = texte.replace(" ", "")
+#         f = f.replace("DH", "")
+#         f = f.replace("MAD", "")
+#         f = f.replace('TTC', '')
+#         if '/' in f:
+#             f = f.split('/')[0]
+#         if '.' in f and ',' in f:
+#             if f.find(',') > f.find('.'):
+#                 f = f.replace(".", "")
+#         f = f.replace(",", ".")
+#         f = f.replace('\u202f', '')
+#         return float(f)
+#     except Exception as x:
+#         printMessage('ERROR', 'helper.money2Float', f'Something went wrong while converting string ({texte}) to float. Amount is set to 0')
+#         printMessage('ERROR', 'helper.money2Float', str(x))
+#         return -1
 
 
 def text2Alphanum(text, allCapps=True, dash='-', minLen=8, firstAlpha='M', fillerChar='0'):
