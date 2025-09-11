@@ -204,16 +204,31 @@ def getConsObject(link_item):
     helper.printMessage('DEBUG', 'objeer.getConsObject', f'Getting objects for item id = {link_item[0]}')
 
     cons_link = f'{C.LINK_PREFIX}{link_item[0]}{C.LINK_STITCH}{link_item[1]}'
+    dce_link = f'{C.SITE_INDEX}?page=entreprise.EntrepriseDownloadCompleteDce&reference={link_item[0]}&orgAcronym={link_item[1]}'
 
     rua = helper.getUa()
     helper.printMessage('DEBUG', 'objeer.getConsObject', f'Using UA: {rua}.')
     headino = {"User-Agent": rua }
-
     sessiono = requests.Session()
+
+    cons_bytes = 0
+    try: 
+        dce_head = sessiono.head(dce_link, headers=headino, timeout=C.REQ_TIMEOUT, allow_redirects=True)
+        if dce_head.status_code != 200 :
+            helper.printMessage('ERROR', 'objeer.getConsObject', f'Request to DCE Header page returned a {dce_head.status_code} status code.')
+            if dce_head.status_code == 429:
+                helper.printMessage('ERROR', 'objeer.getConsObject', f'Too many Requests, said the server: {dce_head.status_code} !')
+                helper.sleepRandom(300, 600)
+            return None
+        if 'Content-Length' in dce_head.headers:
+            cons_bytes = int(dce_head.headers['Content-Length'])
+    except Exception as x:
+        helper.printMessage('ERROR', 'objeer.getConsObject', f'Exception raised while getting file size at {str(dce_link)}: {str(x)}')
+        return None
 
     try: request_cons = sessiono.get(cons_link, headers=headino, timeout=C.REQ_TIMEOUT)  # driver.get(lots_link)
     except Exception as x:
-        helper.printMessage('ERROR', 'objeer.getConsObject', f'Exception raised while getting lots at {str(cons_link)}: {str(x)}')
+        helper.printMessage('ERROR', 'objeer.getConsObject', f'Exception raised while getting Cons at {str(cons_link)}: {str(x)}')
         return None
     helper.printMessage('DEBUG', 'objeer.getConsObject', f'Getting Cons page : {request_cons}')
     if request_cons.status_code != 200 :
@@ -409,6 +424,7 @@ def getConsObject(link_item):
         C.IDENTI: cons_idddd,
         C.LINKKK: cons_link,
         C.DCESIZ: cons_sized,
+        C.BYTESS: cons_bytes,
         }
 
     return cons_dict

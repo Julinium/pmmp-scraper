@@ -124,6 +124,7 @@ REUNIO = "Reunions"
 VISITS = "Visites des Lieux"
 VARIAN = "Variante"
 DCESIZ = "Taille DCE"
+BYTESS = "Octets"
 
 ECHAND = "Date_Echantillons"
 ECHANA = "Adresse_Echantillons"

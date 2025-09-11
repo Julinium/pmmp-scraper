@@ -413,6 +413,31 @@ def writeData(dicto, session):
     return 1
 
 
+def getDCEbytes(consino):
+    """
+    Calculates the actual file size on disk
+    """
+    dce_folder = os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{consino.portal_id}')
+    total_size = 0
+    try:        
+        # Check if the folder exists
+        if not os.path.exists(dce_folder):
+            raise FileNotFoundError(f"The folder '{dce_folder}' does not exist.")
+
+        # Iterate through all files in the folder
+        for entry in os.scandir(dce_folder):
+            if entry.is_file():  # Only process files, not subdirectories
+                try:
+                    total_size += entry.stat().st_size  # Add file size in bytes
+                except (PermissionError, FileNotFoundError) as e:
+                    print(f"Error accessing file {entry.path}: {e}")
+        return total_size
+    
+    except Exception as e:
+        print(f"Error processing folder {dce_folder}: {e}")
+        return 0
+
+
 def hasChanged(dicto, consino, session):
     """
     # Synopsis:
@@ -431,12 +456,18 @@ def hasChanged(dicto, consino, session):
     if dicto[C.DCESIZ] == None:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size from portal was empty.')
         return 1
+
+    localBytes = getDCEbytes(consino)
+    if dicto[C.BYTESS] != localBytes:
+        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files size: {dicto[C.BYTESS]} vs {localBytes}')
+        return 1
+    deadline_date_dc = helper.reading2LocalTime(dicto[C.DDLINE])
+    if deadline_date_dc != consino.date_limite_depot:
+        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Deadline: {deadline_date_dc} vs {consino.date_limite_depot}')
+        return 1
     pub_date_dc = helper.getDateTime(dicto[C.PUDATE]).date()
     if pub_date_dc != consino.date_publication:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Publication date: {pub_date_dc} vs {consino.date_publication}')
-        return 1
-    if helper.reading2LocalTime(dicto[C.DDLINE]) != consino.date_limite_depot:
-        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Deadline: {helper.reading2LocalTime(dicto[C.DDLINE])} vs {consino.date_limite_depot}')
         return 1
     if dicto[C.CANCEL] != consino.cancelled:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Item cancelled.')
