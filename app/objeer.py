@@ -207,7 +207,16 @@ def getConsObject(link_item):
     dce_link = f'{C.SITE_INDEX}?page=entreprise.EntrepriseDownloadCompleteDce&reference={link_item[0]}&orgAcronym={link_item[1]}'
 
     rua = helper.getUa()
-    helper.printMessage('DEBUG', 'objeer.getConsObject', f'Using UA: {rua}.')
+    rua_label = "Random"
+    try:
+        start_delimiter = "Mozilla/5.0 ("
+        end_delimiter = "; "
+        start_index = rua.index(start_delimiter) + len(start_delimiter)
+        end_index = rua.index(end_delimiter, start_index)
+        return rua[start_index:end_index]
+    except ValueError:
+        pass
+    helper.printMessage('DEBUG', 'objeer.getConsObject', f'Using UA: {rua_label}.')
     headino = {"User-Agent": rua }
     sessiono = requests.Session()
 
