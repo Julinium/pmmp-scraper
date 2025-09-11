@@ -457,36 +457,47 @@ def hasChanged(dicto, consino, session):
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size from portal was empty.')
         return 1
 
-    localBytes = getDCEbytes(consino)
-    if dicto[C.BYTESS] != localBytes:
-        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files size: {dicto[C.BYTESS]} vs {localBytes}')
-        return 1
     deadline_date_dc = helper.reading2LocalTime(dicto[C.DDLINE])
     if deadline_date_dc != consino.date_limite_depot:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Deadline: {deadline_date_dc} vs {consino.date_limite_depot}')
         return 1
+
+    if dicto[C.BYTESS] != 0:
+        localBytes = getDCEbytes(consino)
+        if localBytes != 0:
+            if dicto[C.BYTESS] != localBytes:
+                helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files bytes: {dicto[C.BYTESS]} vs {localBytes}')
+                return 1
+
+    if dicto[C.DCESIZ] != consino.portal_size:
+        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size: {dicto[C.DCESIZ]} vs {consino.portal_size}')
+        return 1
+
+    if dicto[C.CANCEL] != consino.cancelled:
+        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Item cancelled.')
+        return 1
+
     pub_date_dc = helper.getDateTime(dicto[C.PUDATE]).date()
     if pub_date_dc != consino.date_publication:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Publication date: {pub_date_dc} vs {consino.date_publication}')
         return 1
-    if dicto[C.CANCEL] != consino.cancelled:
-        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Item cancelled.')
-        return 1
+
     if dicto[C.REFERE] != consino.reference:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Reference: {dicto[C.REFERE]} vs {consino.reference}')
         return 1
+
     if int(dicto[C.NUMBLO]) != consino.nombre_lots:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Number of lots: {int(dicto[C.NUMBLO])} vs {consino.nombre_lots}')
         return 1
+
     if dicto[C.OBJETC] != consino.objet:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Object: {dicto[C.OBJETC]} vs {consino.objet}')
         return 1
+
     if dicto[C.LIEUEX] != consino.lieu_execution:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Execution location: {dicto[C.LIEUEX]} vs {consino.lieu_execution}')
         return 1
-    if dicto[C.DCESIZ] != consino.portal_size:
-        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files size: {dicto[C.DCESIZ]} vs {consino.portal_size}')
-        return 1
+
     
     lots_dc = dicto[C.LOTSSS]
 

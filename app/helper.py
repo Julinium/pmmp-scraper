@@ -298,6 +298,7 @@ def getUa():
 def sleepRandom(Fm=15, To=45):
     rint = random.randint(Fm, To)
     helper.printMessage('DEBUG', 'helper.sleepRandom', f'ZZZZZZZZZZZZZZZZZZZZZZZZZZZ. Sleeping for a ({rint}s) while.\n\n')
+    time.sleep(1)
     time.sleep(rint)
     return 0
 
