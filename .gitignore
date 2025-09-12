@@ -1,6 +1,7 @@
 .venv/
 app/__pycache__/
 .env
+.env.*
 crony/.lock
 logs/
 exports/

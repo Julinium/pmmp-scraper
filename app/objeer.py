@@ -13,7 +13,17 @@ def getLotsObject(lots_href):
     lots_link = C.SITE_INDEX + lots_href.replace("javascript:popUp('index.php", "").replace("%27,%27yes%27)", "")
 
     rua = helper.getUa()
-    helper.printMessage('DEBUG', 'objeer.getObject', f'Using UA: {rua}.')
+    rua_label = "Random"
+    try:
+        start_delimiter = "Mozilla/5.0 ("
+        end_delimiter = "; "
+        start_index = rua.index(start_delimiter) + len(start_delimiter)
+        end_index = rua.index(end_delimiter, start_index)
+        rua_label = rua[start_index:end_index]
+    except ValueError as ve:
+        helper.printMessage('ERROR', 'objeer.getConsObject', f'Error trimming UA: {str(ve)}')
+    
+    helper.printMessage('DEBUG', 'objeer.getObject', f'Using UA: {rua_label}.')
     headino = {"User-Agent": rua }
 
     sessiono = requests.Session()
