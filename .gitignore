@@ -4,3 +4,4 @@ app/__pycache__/
 crony/.lock
 logs/
 exports/
+media/
