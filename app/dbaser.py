@@ -465,16 +465,16 @@ def hasChanged(dicto, consino, session):
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Deadline: {deadline_date_dc} vs {consino.date_limite_depot}')
         return 1
 
+    if dicto[C.DCESIZ] != consino.portal_size:
+        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size: {dicto[C.DCESIZ]} vs {consino.portal_size}')
+        return 1
+
     if dicto[C.BYTESS] != 0:
         localBytes = getDCEbytes(consino)
         if localBytes != 0:
             if dicto[C.BYTESS] != localBytes:
                 helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files bytes: {dicto[C.BYTESS]} vs {localBytes}')
                 return 1
-
-    if dicto[C.DCESIZ] != consino.portal_size:
-        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size: {dicto[C.DCESIZ]} vs {consino.portal_size}')
-        return 1
 
     if dicto[C.CANCEL] != consino.cancelled:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Item cancelled.')
