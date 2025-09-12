@@ -27,7 +27,7 @@ def printMessage(level='INFO', raiser='', message='!!! Empty Message !!!'):
         print(f'[{datetime.now(timezone.utc).strftime(C.LOG_TIME_FORMAT)}][{level}][{raiser}] {message}')
 
 
-def money2float(texte: str) -> Decimal:
+def money2Float(texte: str) -> Decimal:
     """
     Converts a string containing a monetary amount to a Decimal.
 

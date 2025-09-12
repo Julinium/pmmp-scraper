@@ -92,6 +92,10 @@ for i, l in enumerate(links, start=1):
             cons_dict = objeer.getConsObject(l)
             rlc += 1
             if cons_dict:
+
+                # helper.printMessage('DEBUG', 'worker', f'>>>>>>>>>>>>>>> worker XXXXXXXXXXXXXXX')
+                # helper.printMessage('DEBUG', 'worker', f"cons_dict = { str(cons_dict) }")
+                # helper.printMessage('DEBUG', 'worker', f'XXXXXXXXXXXXXXX worker <<<<<<<<<<<<<<<')
                 helper.printMessage('DEBUG', 'worker', 'Successfully read objects for link. Saving to database ... ')
                 if dbaser.writeData(cons_dict, session) == 0: 
                     count_cons += 1

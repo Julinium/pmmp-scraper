@@ -213,9 +213,10 @@ def getConsObject(link_item):
         end_delimiter = "; "
         start_index = rua.index(start_delimiter) + len(start_delimiter)
         end_index = rua.index(end_delimiter, start_index)
-        return rua[start_index:end_index]
-    except ValueError:
-        pass
+        rua_label = rua[start_index:end_index]
+    except ValueError as ve:
+        helper.printMessage('ERROR', 'objeer.getConsObject', f'Error trimming UA: {str(ve)}')
+    
     helper.printMessage('DEBUG', 'objeer.getConsObject', f'Using UA: {rua_label}.')
     headino = {"User-Agent": rua }
     sessiono = requests.Session()

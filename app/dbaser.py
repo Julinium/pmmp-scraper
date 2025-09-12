@@ -122,6 +122,9 @@ def writeData(dicto, session):
     total_qua, total_agr, total_ech, total_reu, total_vis = 0, 0, 0, 0, 0
 
     # Check if Consultation already exists.
+    # helper.printMessage('DEBUG', 'dbaser.writeData', f'>>>>>>>>>>>>>>> dbaser.writeData XXXXXXXXXXXXXXX')
+    # helper.printMessage('DEBUG', 'dbaser.writeData', f"dicto = { str(dicto) }")
+    # helper.printMessage('DEBUG', 'dbaser.writeData', f'XXXXXXXXXXXXXXX dbaser.writeData <<<<<<<<<<<<<<<')
     p_id = dicto[C.IDENTI]
     helper.printMessage('DEBUG', 'dbaser.writeData', f'Saving data Objects for id {p_id} ... ')
     if session.query(Consultation.portal_id).filter_by(portal_id=p_id).first():

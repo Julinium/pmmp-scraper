@@ -47,7 +47,17 @@ def getDCE(link_item):
         headino = {"User-Agent": DEFAULT_UA}
     else :
         rua = C.USER_AGENTS[random.randint(0, len(C.USER_AGENTS)-1)]
-        helper.printMessage('DEBUG', 'dnlder.getDCE', f'Using random UA: {rua}.')
+        rua_label = "Random"
+        try:
+            start_delimiter = "Mozilla/5.0 ("
+            end_delimiter = "; "
+            start_index = rua.index(start_delimiter) + len(start_delimiter)
+            end_index = rua.index(end_delimiter, start_index)
+            rua_label = rua[start_index:end_index]
+        except ValueError as ve:
+            helper.printMessage('ERROR', 'dnlder.getDCE', f'Error trimming UA: {str(ve)}')
+
+        helper.printMessage('DEBUG', 'dnlder.getDCE', f'Using random UA: {rua_label}.')
         headino = {"User-Agent":  rua}
 
     sessiono = requests.Session()
@@ -105,8 +115,8 @@ def getDCE(link_item):
     creds = {'fname': 'Hamid', 'lname': 'ZAHIRI', 'email': 'h.zahir.pro@menara.ma'}
     if len(C.DCE_CREDS) > 0:
         creds = C.DCE_CREDS[random.randint(0, len(C.DCE_CREDS)-1)]
-        helper.printMessage('DEBUG', 'dnlder.getDCE', f'Using random credentials: {creds.get("email")}.')
-    else: helper.printMessage('DEBUG', 'dnlder.getDCE', f'Using default credentials: {creds.get("email")}.')
+        helper.printMessage('DEBUG', 'dnlder.getDCE', f'Using Credentials for: {creds.get("fname")} {creds.get("lname")}.')
+    else: helper.printMessage('DEBUG', 'dnlder.getDCE', f'Using Credentials for: {creds.get("fname")} {creds.get("lname")}.')
 
     datano['ctl0$CONTENU_PAGE$EntrepriseFormulaireDemande$prenom'] = creds.get('fname', 'Mourad')
     datano['ctl0$CONTENU_PAGE$EntrepriseFormulaireDemande$nom'] = creds.get('lname', 'Mountassir')
