@@ -469,13 +469,6 @@ def hasChanged(dicto, consino, session):
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size: {dicto[C.DCESIZ]} vs {consino.portal_size}')
         return 1
 
-    if dicto[C.BYTESS] != 0:
-        localBytes = getDCEbytes(consino)
-        if localBytes != 0:
-            if dicto[C.BYTESS] != localBytes:
-                helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files bytes: {dicto[C.BYTESS]} vs {localBytes}')
-                return 1
-
     if dicto[C.CANCEL] != consino.cancelled:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Item cancelled.')
         return 1
@@ -500,6 +493,13 @@ def hasChanged(dicto, consino, session):
     if dicto[C.LIEUEX] != consino.lieu_execution:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Execution location: {dicto[C.LIEUEX]} vs {consino.lieu_execution}')
         return 1
+
+    if dicto[C.BYTESS] != 0:
+        localBytes = getDCEbytes(consino)
+        if localBytes != 0:
+            if dicto[C.BYTESS] != localBytes:
+                helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files bytes: {dicto[C.BYTESS]} vs {localBytes}')
+                return 1
 
     
     lots_dc = dicto[C.LOTSSS]
