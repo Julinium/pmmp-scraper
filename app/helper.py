@@ -295,7 +295,7 @@ def getUa():
     return rua
 
 
-def sleepRandom(Fm=15, To=45):
+def sleepRandom(Fm=55, To=115):
     rint = random.randint(Fm, To)
     helper.printMessage('DEBUG', 'helper.sleepRandom', f'ZZZZZZZZZZZZZZZZZZZZZZZZZZZ. Sleeping for a ({rint}s) while.\n\n')
     time.sleep(1)
