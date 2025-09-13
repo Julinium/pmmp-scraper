@@ -205,15 +205,6 @@ def getDCE(link_item):
     filename_base = f'{FILE_PREFIX}-{cleaned_name}{file_extension}'
     filename = os.path.join(con_path, filename_base)
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Writing file content to {filename_base} ... ')
-
-
-    print(f"================ filename_cd: {filename_cd}")
-    print(f"============= fiel_name_base: {fiel_name_base}")
-    print(f"============= file_extension: {file_extension}")
-    print(f"=============== cleaned_name: {cleaned_name}")
-    print(f"============== filename_base: {filename_base}")
-    print(f"=================== filename: {filename}")
-
     
     try:
         with open(filename, 'wb') as file:
