@@ -1,4 +1,4 @@
-import os, random, re, requests
+import os, random, re, requests, zipfile
 from bs4 import BeautifulSoup
 
 import helper
@@ -6,9 +6,51 @@ import settings as C
 from dbaser import getCurrentCons
 
 
-FILE_PREFIX =  'eMarches.com'
+FILE_PREFIX   = 'eMarches.com'
 SLEEP_4XX_MIN = 377
 SLEEP_4XX_MAX = 777
+
+
+
+def insertExtras(zipArchive, extrasDir=None):
+
+    """
+    Add all files from extrasDir to zipArchive.
+
+    Args:
+        extrasDir (str): Path to the directory containing files to add.
+        zipArchive (str): Path to the zipArchive file.
+    """
+
+    if extrasDir == None:
+        extrasDir = os.path.join(C.MEDIA_ROOT, 'extras')
+
+    helper.printMessage('DEBUG', 'dnlder.insertExtras', f"Adding files from '{extrasDir}' to '{zipArchive}'")
+    
+    try:
+        if not os.path.isfile(zipArchive) or not zipArchive.endswith('.zip'):
+            helper.printMessage('WARN', 'dnlder.insertExtras', f"Does not look like a valid Zip archive: '{zipArchive}'")
+            return
+
+        extras_files = [f for f in os.listdir(extrasDir) 
+                       if os.path.isfile(os.path.join(extrasDir, f))]
+        if not extras_files:
+            helper.printMessage('WARN', 'dnlder.insertExtras', f"No files found in '{extrasDir}'")
+            return
+
+        try:
+            with zipfile.ZipFile(zipArchive, 'a', zipfile.ZIP_DEFLATED) as zipf:
+                for extra_file in extras_files:
+                    extra_file_path = os.path.join(extrasDir, extra_file)
+                    zipf.write(extra_file_path, extra_file)
+                    helper.printMessage('DEBUG', 'dnlder.insertExtras', f"Added '{extra_file}' to '{zipArchive}'")
+        except Exception as e:
+            helper.printMessage('WARN', 'dnlder.insertExtras', f"Something faild while processing '{zipArchive}': {e}")
+
+        helper.printMessage('INFO', 'dnlder.insertExtras', f"=== Added files from '{extrasDir}' to '{zipArchive}'")
+    except Exception as e:
+        helper.printMessage('WARN', 'dnlder.insertExtras', f"Something went wrong : {e}")
+
 
 def getDCE(link_item):
     if not os.path.exists(C.MEDIA_ROOT): 
@@ -161,14 +203,16 @@ def getDCE(link_item):
     filename = os.path.join(con_path, filename_base)
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Writing file content to {filename_base} ... ')
 
-
     try:
         with open(filename, 'wb') as file:
             bytes_written = file.write(request_file.content)
             helper.printMessage('DEBUG', 'dnlder.getDCE', f'### Bytes written: {bytes_written}/{len(request_file.content)}.')
 
         # Verify the file size
-        if bytes_written != len(request_file.content): raise IOError("File size mismatch: Not all content was written.")
+        if bytes_written == len(request_file.content):
+            insertExtras(insertExtras)
+        else:
+            raise IOError("File size mismatch: Not all content was written.")
         if os.path.getsize(filename) == 0: raise IOError("File was created but is empty. Go and know why!")
     except Exception as e:
         helper.printMessage('ERROR', 'dnlder.getDCE', f"Error writing data to file: {e}")
@@ -215,3 +259,4 @@ def getMissingDCE(session):
                 helper.printMessage('DEBUG', 'dnlder.getMissingDCE', '===== DCE files are already there. Skipping.\n\n')
 
         return [errors, checked, skipped, corrected, failed]
+
