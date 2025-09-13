@@ -24,18 +24,21 @@ def insertExtras(zipArchive, extrasDir=None):
 
     if extrasDir == None:
         extrasDir = os.path.join(C.MEDIA_ROOT, 'extras')
+    
+    extra_dir_pub = extrasDir.replace(C.MEDIA_ROOT, '').strip('/')
+    zip_arch_pub = zipArchive.replace(C.MEDIA_ROOT, '').strip('/')
 
-    helper.printMessage('DEBUG', 'dnlder.insertExtras', f"Adding files from '{extrasDir}' to '{zipArchive}'")
+    helper.printMessage('DEBUG', 'dnlder.insertExtras', f"Adding files from '{extra_dir_pub}' to '{zip_arch_pub}'")
 
     try:
         if not os.path.isfile(zipArchive) or not zipArchive.endswith('.zip'):
-            helper.printMessage('WARN', 'dnlder.insertExtras', f"Not looking like a valid Zip archive: '{zipArchive}'")
+            helper.printMessage('WARN', 'dnlder.insertExtras', f"Not looking like a valid Zip archive: '{zip_arch_pub}'")
             return
 
         extras_files = [f for f in os.listdir(extrasDir) 
                        if os.path.isfile(os.path.join(extrasDir, f))]
         if not extras_files:
-            helper.printMessage('WARN', 'dnlder.insertExtras', f"No files found in '{extrasDir}'")
+            helper.printMessage('WARN', 'dnlder.insertExtras', f"No files found in '{extra_dir_pub}'")
             return
 
         try:
@@ -43,11 +46,11 @@ def insertExtras(zipArchive, extrasDir=None):
                 for extra_file in extras_files:
                     extra_file_path = os.path.join(extrasDir, extra_file)
                     zipf.write(extra_file_path, extra_file)
-                    helper.printMessage('DEBUG', 'dnlder.insertExtras', f"Added '{extra_file}' to '{zipArchive}'")
+                    helper.printMessage('DEBUG', 'dnlder.insertExtras', f"Added '{extra_file}' to '{zip_arch_pub}'")
         except Exception as e:
-            helper.printMessage('WARN', 'dnlder.insertExtras', f"Something faild while processing '{zipArchive}': {e}")
+            helper.printMessage('WARN', 'dnlder.insertExtras', f"Something faild while processing '{zip_arch_pub}': {e}")
 
-        helper.printMessage('INFO', 'dnlder.insertExtras', f"=== Added files from '{extrasDir}' to '{zipArchive}'")
+        helper.printMessage('INFO', 'dnlder.insertExtras', f"=== Added files from '{extra_dir_pub}' to '{zip_arch_pub}'")
     except Exception as e:
         helper.printMessage('WARN', 'dnlder.insertExtras', f"Something went wrong : {e}")
 
