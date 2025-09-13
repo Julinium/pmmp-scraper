@@ -26,10 +26,10 @@ def insertExtras(zipArchive, extrasDir=None):
         extrasDir = os.path.join(C.MEDIA_ROOT, 'extras')
 
     helper.printMessage('DEBUG', 'dnlder.insertExtras', f"Adding files from '{extrasDir}' to '{zipArchive}'")
-    
+
     try:
         if not os.path.isfile(zipArchive) or not zipArchive.endswith('.zip'):
-            helper.printMessage('WARN', 'dnlder.insertExtras', f"Does not look like a valid Zip archive: '{zipArchive}'")
+            helper.printMessage('WARN', 'dnlder.insertExtras', f"Not looking like a valid Zip archive: '{zipArchive}'")
             return
 
         extras_files = [f for f in os.listdir(extrasDir) 
@@ -191,18 +191,30 @@ def getDCE(link_item):
     else: helper.printMessage('DEBUG', 'dnlder.getDCE', f'Getting file: Successful')
 
     try:
-        filename_cd = get_filename(request_file.headers.get('content-disposition'))
+        filename_cd = get_filename(request_file.headers.get('content-disposition')).replace('"', '').replace(';', '')
         # filename_cd = filename_cd.lower().replace('zip', '')
-        filename_cd = helper.text2Alphanum(filename_cd, allCapps=True, dash='-', minLen=8, firstAlpha='M', fillerChar='0')
     except Exception as xc:
         helper.printMessage('WARN', 'dnlder.getDCE', 'Could not get file name from portal.')
         helper.printMessage('WARN', 'dnlder.getDCE', str(xc))
         filename_cd = f"CONS-{link_item[0]}"
 
-    filename_base = f'{FILE_PREFIX}-{link_item[0]}-{filename_cd}'
+    fiel_name_base = os.path.splitext(filename_cd)[0]
+    file_extension = os.path.splitext(filename_cd)[1]
+    cleaned_name = helper.text2Alphanum(fiel_name_base, allCapps=True, dash='-', minLen=8, firstAlpha='M', fillerChar='0')
+    
+    filename_base = f'{FILE_PREFIX}-{cleaned_name}{file_extension}'
     filename = os.path.join(con_path, filename_base)
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Writing file content to {filename_base} ... ')
 
+
+    print(f"================ filename_cd: {filename_cd}")
+    print(f"============= fiel_name_base: {fiel_name_base}")
+    print(f"============= file_extension: {file_extension}")
+    print(f"=============== cleaned_name: {cleaned_name}")
+    print(f"============== filename_base: {filename_base}")
+    print(f"=================== filename: {filename}")
+
+    
     try:
         with open(filename, 'wb') as file:
             bytes_written = file.write(request_file.content)
@@ -210,7 +222,7 @@ def getDCE(link_item):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
-            insertExtras(insertExtras)
+            insertExtras(filename)
         else:
             raise IOError("File size mismatch: Not all content was written.")
         if os.path.getsize(filename) == 0: raise IOError("File was created but is empty. Go and know why!")
