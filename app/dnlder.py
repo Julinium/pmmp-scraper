@@ -26,9 +26,6 @@ def getDCE(link_item):
 
 
     def make_link(link_item, type=None):
-        # f'{C.SITE_INDEX}?page=entreprise.EntrepriseDownloadReglement&reference=ODkxNjE4&orgAcronyme={link_item[1]}'
-        # f'{C.SITE_INDEX}?page=entreprise.EntrepriseDownloadCompleteDce&reference={link_item[0]}&orgAcronym={link_item[1]}'
-        # f'{C.SITE_INDEX}?page=entreprise.EntrepriseDemandeTelechargementDce&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
         if type == 'query': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDemandeTelechargementDce&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
         if type == 'file': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDownloadCompleteDce&reference={link_item[0]}&orgAcronym={link_item[1]}'
         return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDetailsConsultation&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
@@ -66,7 +63,6 @@ def getDCE(link_item):
     url_file = make_link(link_item, 'file')
     
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Cons link : {url_query.replace(C.SITE_INDEX, '')}')
-    helper.printMessage('DEBUG', 'dnlder.getDCE', f'Form link : {url_form.replace(C.SITE_INDEX, '')}')
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'File link : {url_file.replace(C.SITE_INDEX,'')}')
 
     try: request_query = sessiono.get(url_query, headers=headino, timeout=C.REQ_TIMEOUT)
@@ -154,15 +150,14 @@ def getDCE(link_item):
 
     try:
         filename_cd = get_filename(request_file.headers.get('content-disposition'))
-        filename_cd = filename_cd.lower().replace('zip', '')
+        # filename_cd = filename_cd.lower().replace('zip', '')
         filename_cd = helper.text2Alphanum(filename_cd, allCapps=True, dash='-', minLen=8, firstAlpha='M', fillerChar='0')
     except Exception as xc:
-        helper.printMessage('DEBUG', 'dnlder.getDCE', 'Could not get file name from portal.')
-        helper.printMessage('DEBUG', 'dnlder.getDCE', str(xc))
+        helper.printMessage('WARN', 'dnlder.getDCE', 'Could not get file name from portal.')
+        helper.printMessage('WARN', 'dnlder.getDCE', str(xc))
         filename_cd = f"CONS-{link_item[0]}"
-        # return 1
 
-    filename_base = f'{FILE_PREFIX}-{link_item[0]}-{filename_cd}.zip'
+    filename_base = f'{FILE_PREFIX}-{link_item[0]}-{filename_cd}'
     filename = os.path.join(con_path, filename_base)
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Writing file content to {filename_base} ... ')
 
@@ -204,7 +199,6 @@ def getMissingDCE(session):
                 dce_files = os.listdir(dce_path)
             else:
                 helper.printMessage('DEBUG', 'dnlder.getMissingDCE', f'=== No DCE folder was found for id = {con.portal_id} ... ')
-            
 
             if len(dce_files) == 0:
                 rlc += 1
