@@ -1,13 +1,12 @@
 import os, random, re, requests
 from bs4 import BeautifulSoup
-from slugify import slugify
 
 import helper
 import settings as C
 from dbaser import getCurrentCons
 
 
-FILE_PREFIX =  'eMarches.com-' # '[eMarches.com]_'
+FILE_PREFIX =  'eMarches.com' # '[eMarches.com]_'
 SLEEP_4XX_MIN = 377
 SLEEP_4XX_MAX = 777
 
