@@ -234,14 +234,15 @@ def getConsObject(link_item):
     cons_bytes = 0
     try:
         dce_head = sessiono.head(dce_link, headers=headino, timeout=C.REQ_TIMEOUT, allow_redirects=True)
-        if dce_head.status_code != 200 :
+        if dce_head.status_code == 200 :
+            if 'Content-Length' in dce_head.headers:
+                cons_bytes = int(dce_head.headers['Content-Length'])
+            # return None
+        else:
             helper.printMessage('ERROR', 'objeer.getConsObject', f'Request to DCE Header page returned a {dce_head.status_code} status code.')
             if dce_head.status_code == 429:
                 helper.printMessage('ERROR', 'objeer.getConsObject', f'Too many Requests, said the server: {dce_head.status_code} !')
                 helper.sleepRandom(300, 600)
-            # return None
-        if 'Content-Length' in dce_head.headers:
-            cons_bytes = int(dce_head.headers['Content-Length'])
     except Exception as x:
         helper.printMessage('WARNING', 'objeer.getConsObject', f'Exception raised while getting file size at {str(dce_link)}: {str(x)}')
         # return None
