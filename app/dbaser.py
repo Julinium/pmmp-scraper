@@ -422,16 +422,14 @@ def getDCEbytes(consino):
     """
     dce_folder = os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{consino.portal_id}')
     total_size = 0
-    try:        
-        # Check if the folder exists
+    try:
         if not os.path.exists(dce_folder):
             raise FileNotFoundError(f"The folder '{dce_folder}' does not exist.")
 
-        # Iterate through all files in the folder
         for entry in os.scandir(dce_folder):
-            if entry.is_file():  # Only process files, not subdirectories
+            if entry.is_file():
                 try:
-                    total_size += entry.stat().st_size  # Add file size in bytes
+                    total_size += entry.stat().st_size
                 except (PermissionError, FileNotFoundError) as e:
                     print(f"Error accessing file {entry.path}: {e}")
         return total_size
