@@ -216,6 +216,7 @@ def getDCE(link_item):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
+            pass
             # insertExtras(filename)
         else:
             raise IOError("File size mismatch: Not all content was written.")
