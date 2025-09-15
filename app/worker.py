@@ -141,9 +141,8 @@ else:
     helper.printMessage('INFO', 'worker', 'Getting missing DCE files...')
     cor = dnlder.getMissingDCE(session)
     count_dce += cor[3]
-    if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.')
-    helper.printMessage('INFO', 'worker', f'=== Missing files: Checked={cor[1]}, Errors={cor[0]}, Skipped={cor[2]}, Corrected={cor[3]}, Failed={cor[4]}.\n')
-
+    # if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.')
+    helper.printMessage('INFO', 'worker', f'=== Missing files: Checked={cor[0]}, Skipped={cor[1]}, Corrected={cor[2]}, Failed={cor[3]}.\n')
 
 
 # TODO: What about an item with more than one file ?

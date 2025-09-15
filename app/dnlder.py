@@ -55,7 +55,7 @@ def insertExtras(zipArchive, extrasDir=None):
         helper.printMessage('WARN', 'dnlder.insertExtras', f"Something went wrong : {e}")
 
 
-def getDCE(link_item, session=None):
+def getDCE(link_item, session):
 
     def make_link(link_item, type=None):
         if type == 'query': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDemandeTelechargementDce&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
@@ -102,7 +102,7 @@ def getDCE(link_item, session=None):
         helper.printMessage('DEBUG', 'dnlder.getDCE', f'Using random UA: {rua_label}.')
         headino = {"User-Agent":  rua}
 
-    sessiono = requests.Session()
+    http_session = requests.Session()
 
     url_query = make_link(link_item, 'query')
     url_form = url_query
@@ -111,7 +111,7 @@ def getDCE(link_item, session=None):
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Cons link : {url_query.replace(C.SITE_INDEX, '')}')
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'File link : {url_file.replace(C.SITE_INDEX,'')}')
 
-    try: request_query = sessiono.get(url_query, headers=headino, timeout=C.REQ_TIMEOUT)
+    try: request_query = http_session.get(url_query, headers=headino, timeout=C.REQ_TIMEOUT)
     except Exception as xc: 
         helper.printMessage('ERROR', 'dnlder.getDCE', str(xc))
         return 1
@@ -167,7 +167,7 @@ def getDCE(link_item, session=None):
     if prado_pbk_target: datano['PRADO_POSTBACK_TARGET'] = prado_pbk_target
     if prado_pbk_parame: datano['PRADO_POSTBACK_PARAMETER'] = prado_pbk_parame
     
-    try: request_form = sessiono.post(url_form, headers=headino, data=datano, timeout=C.REQ_TIMEOUT)
+    try: request_form = http_session.post(url_form, headers=headino, data=datano, timeout=C.REQ_TIMEOUT)
     except Exception as xc: 
         helper.printMessage('ERROR', 'dnlder.getDCE', 'Exception raised while submitting form.')
         helper.printMessage('ERROR', 'dnlder.getDCE', str(xc)) 
@@ -181,7 +181,7 @@ def getDCE(link_item, session=None):
 
     try:
         helper.printMessage('DEBUG', 'dnlder.getDCE', f'Requesting file at : {url_file.replace(C.SITE_INDEX,'')}')
-        request_file = sessiono.get(url_file, headers=headino, timeout=C.DLD_TIMEOUT)
+        request_file = http_session.get(url_file, headers=headino, timeout=C.DLD_TIMEOUT)
     except requests.exceptions.Timeout:
         helper.printMessage('ERROR', 'dnlder.getDCE', "Request timed out! Exception message: " + str(xc))
     except Exception as xc: 
@@ -196,7 +196,6 @@ def getDCE(link_item, session=None):
 
     try:
         filename_cd = get_filename(request_file.headers.get('content-disposition')).replace('"', '').replace(';', '')
-        # filename_cd = filename_cd.lower().replace('zip', '')
     except Exception as xc:
         helper.printMessage('WARN', 'dnlder.getDCE', 'Could not get file name from portal.')
         helper.printMessage('WARN', 'dnlder.getDCE', str(xc))
@@ -217,11 +216,18 @@ def getDCE(link_item, session=None):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
-            consino = consExists(session, link_item[0])
-            if consino:
-                if consino.size_bytes != bytes_written:
-                    consino.size_bytes = bytes_written
-                    consino.save()
+            try:
+                helper.printMessage('DEBUG', 'dnlder.getDCE', f'Trying to update file size bytes for id : {link_item[0]}.')
+                consino = consExists(session, link_item[0])
+                if consino:
+                    if consino.size_bytes != bytes_written:
+                        helper.printMessage('DEBUG', 'dnlder.getDCE', f'Updating file size bytes for id : {consino.portal_id}.')
+                        consino.size_bytes = bytes_written
+                        consino.save()
+                    else:
+                        helper.printMessage('DEBUG', 'dnlder.getDCE', f'File size bytes for id {consino.portal_id} has the same value.')
+            except Exception as x:
+                helper.printMessage('ERROR', 'dnlder.getDCE', f"Error updating file size bytes on database: {x}")
             # insertExtras(filename)
         else:
             raise IOError("File size mismatch: Not all content was written.")
@@ -235,7 +241,7 @@ def getDCE(link_item, session=None):
 
 def getMissingDCE(session):
     rlc = 0
-    errors, checked, skipped, corrected, failed = 0, 0, 0, 0, 0
+    checked, skipped, corrected, failed = 0, 0, 0, 0
     current_cons = getCurrentCons(session)
     helper.printMessage('INFO', 'dnlder.getMissingDCE', f'Found items to check files for = {len(current_cons)}.')
 
@@ -270,5 +276,5 @@ def getMissingDCE(session):
                 skipped += 1
                 helper.printMessage('DEBUG', 'dnlder.getMissingDCE', '===== DCE files are already there. Skipping.\n\n')
 
-        return [errors, checked, skipped, corrected, failed]
+        return [checked, skipped, corrected, failed]
 

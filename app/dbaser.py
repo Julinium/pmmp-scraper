@@ -62,6 +62,10 @@ class Procedure(Base):
     __table__ = Base.metadata.tables['base_procedure']
 
 
+class ConUpdate(Base):
+    __table__ = Base.metadata.tables['base_con_update']
+
+
 class Mode(Base):
     __table__ = Base.metadata.tables['base_mode']
 
@@ -439,6 +443,21 @@ def writeData(dicto, session):
 #         print(f"Error processing folder {dce_folder}: {e}")
 #         return 0
 
+def logConUpdate(session, consino, updated_field, update_digest=None):
+    try:
+        helper.printMessage('DEBUG', 'dbaser.logConUpdate', f'Logging item update for id = {consino.portal_id}')
+        con_update = ConUpdate(
+            consultation = consino.portal_id,
+            updated_field = updated_field,
+            update_digest = update_digest,
+        )
+        session.add(con_update)
+        session.commit()
+        helper.printMessage('DEBUG', 'dbaser.logConUpdate', f'Successfully logged item update for id = {consino.portal_id}')
+    except Exception as xc:
+        helper.printMessage('ERROR', 'dbaser.logConUpdate', f'Failed logging item update for id = {consino.portal_id}: {str(xc)} ')
+
+
 
 def hasChanged(dicto, consino, session):
     """
@@ -457,40 +476,49 @@ def hasChanged(dicto, consino, session):
     
     if dicto[C.DCESIZ] == None:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size from portal was empty.')
+        logConUpdate(consino, 'DCE size', 'DCE size from portal was empty')        
         return 1
 
     deadline_date_dc = helper.reading2LocalTime(dicto[C.DDLINE])
     if deadline_date_dc != consino.date_limite_depot:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Deadline: {deadline_date_dc} vs {consino.date_limite_depot}')
+        logConUpdate(consino, 'Deadline', f'{deadline_date_dc} vs {consino.date_limite_depot}')
         return 1
 
     if dicto[C.DCESIZ] != consino.portal_size:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: DCE size: {dicto[C.DCESIZ]} vs {consino.portal_size}')
+        logConUpdate(consino, 'DCE size', f'{dicto[C.DCESIZ]} vs {consino.portal_size}')
         return 1
 
     if dicto[C.CANCEL] != consino.cancelled:
-        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Item cancelled.')
+        helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Item cancellation status: {dicto[C.CANCEL]} vs {consino.cancelled}')
+        logConUpdate(consino, 'Status', f'{dicto[C.CANCEL]} vs {consino.cancelled}')
         return 1
 
     pub_date_dc = helper.getDateTime(dicto[C.PUDATE]).date()
     if pub_date_dc != consino.date_publication:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Publication date: {pub_date_dc} vs {consino.date_publication}')
+        logConUpdate(consino, 'Publication date', f'{pub_date_dc} vs {consino.date_publication}')
         return 1
 
     if dicto[C.REFERE] != consino.reference:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Reference: {dicto[C.REFERE]} vs {consino.reference}')
+        logConUpdate(consino, 'Reference', f'{dicto[C.REFERE]} vs {consino.reference}')
         return 1
 
     if int(dicto[C.NUMBLO]) != consino.nombre_lots:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Number of lots: {int(dicto[C.NUMBLO])} vs {consino.nombre_lots}')
+        logConUpdate(consino, 'Number of lots', f'{int(dicto[C.NUMBLO])} vs {consino.nombre_lots}')
         return 1
 
     if dicto[C.OBJETC] != consino.objet:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Object: {dicto[C.OBJETC]} vs {consino.objet}')
+        logConUpdate(consino, 'Object', f'{dicto[C.OBJETC]} vs {consino.objet}')
         return 1
 
     if dicto[C.LIEUEX] != consino.lieu_execution:
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Execution location: {dicto[C.LIEUEX]} vs {consino.lieu_execution}')
+        logConUpdate(consino, 'Execution location', f'{dicto[C.LIEUEX]} vs {consino.lieu_execution}')
         return 1
 
 
@@ -501,6 +529,7 @@ def hasChanged(dicto, consino, session):
         # lots_db = consino.lots.all()
         if len(lots_db) != len(lots_dc):
             helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Number of lots: {len(lots_dc)} vs {len(lots_dc)}')
+            logConUpdate(consino, 'Number of lots', f'{len(lots_dc)} vs {len(lots_dc)}')
             return 1
         
         total_esti_db, total_caut_db, total_esti_dc, total_caut_dc = 0, 0, 0, 0
@@ -512,21 +541,23 @@ def hasChanged(dicto, consino, session):
             total_caut_db += l.caution_provisoire
         if round(float(total_esti_dc), 1) != round(float(total_esti_db), 1) :
             helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Total estimate: {float(total_esti_dc)} vs {float(total_esti_db)}')
+            logConUpdate(consino, 'Total estimate', f'{float(total_esti_dc)} vs {float(total_esti_db)}')
             return 1
         if round(float(total_caut_dc), 1) != round(float(total_caut_db), 1) :
             helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Total caution: {float(total_caut_dc)} vs {float(total_caut_db)}')
+            logConUpdate(consino, 'Total caution', f'{float(total_caut_dc)} vs {float(total_caut_db)}')
             return 1
         
 
     if dicto[C.BYTESS] != 0:
-        # localBytes = getDCEbytes(consino)
         localBytes = consino.size_bytes
         if localBytes != 0:
             if dicto[C.BYTESS] != localBytes:
                 helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files bytes: {dicto[C.BYTESS]} vs {localBytes}')
+                logConUpdate(consino, 'Files bytes', f'{dicto[C.BYTESS]} vs {localBytes}')
                 return 1
 
-    helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== No changes found in checked fields.')
+    helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== No changes were found in checked fields.')
     return 0
 
 
