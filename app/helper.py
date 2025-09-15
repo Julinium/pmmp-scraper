@@ -193,8 +193,7 @@ def getDriver(url=''):
         driver.maximize_window()
     if url == '' or url == None:
         return driver
-    helper.printMessage('DEBUG', 'helper.getDriver',
-                        f'Going to web address: {url}')
+    helper.printMessage('DEBUG', 'helper.getDriver', f'Going to web address: {url.replace(C.SITE_INDEX, '')}')
     driver.get(url)
     helper.printMessage('DEBUG', 'helper.getDriver',
                         'Chromium driver instance is setup and ready.')
