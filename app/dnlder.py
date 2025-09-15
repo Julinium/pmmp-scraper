@@ -217,7 +217,7 @@ def getDCE(link_item, session=None):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
-            consino = consExists(session, portal_number)
+            consino = consExists(session, link_item[0])
             if consino:
                 if consino.size_bytes != bytes_written:
                     consino.size_bytes = bytes_written
