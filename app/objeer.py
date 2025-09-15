@@ -285,7 +285,7 @@ def getConsObject(link_item):
     objet_span = soup.find('span', id='ctl0_CONTENU_PAGE_idEntrepriseConsultationSummary_objet')
     cons_objet = objet_span.get_text().strip() if objet_span else ""
 
-    helper.printMessage('DEBUG', 'objeer.getConsObject', f'Found item: {cons_refce} = {cons_objet[:C.TRUNCA]} ...')
+    helper.printMessage('DEBUG', 'objeer.getConsObject', f'Found item: = {cons_objet[:C.TRUNCA]} ...')
 
     achet_span = soup.find('span', id='ctl0_CONTENU_PAGE_idEntrepriseConsultationSummary_entiteAchat')
     cons_achet = achet_span.get_text().strip() if achet_span else ""
