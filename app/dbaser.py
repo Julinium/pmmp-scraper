@@ -270,6 +270,7 @@ def writeData(dicto, session):
         portal_id=p_id,
         portal_link=dicto[C.LINKKK],
         portal_size = dicto[C.DCESIZ],
+        size_bytes = dicto[C.BYTESS],
         created_on=datetime.now(timezone.utc),
     )
 
@@ -416,27 +417,27 @@ def writeData(dicto, session):
     return 1
 
 
-def getDCEbytes(consino):
-    """
-    Calculates the actual file size on disk
-    """
-    dce_folder = os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{consino.portal_id}')
-    total_size = 0
-    try:
-        if not os.path.exists(dce_folder):
-            raise FileNotFoundError(f"The folder '{dce_folder}' does not exist.")
+# def getDCEbytes(consino):
+#     """
+#     Calculates the actual file size on disk
+#     """
+#     dce_folder = os.path.join(C.MEDIA_ROOT, f'dce/{C.DL_PATH_PREFIX}{consino.portal_id}')
+#     total_size = 0
+#     try:
+#         if not os.path.exists(dce_folder):
+#             raise FileNotFoundError(f"The folder '{dce_folder}' does not exist.")
 
-        for entry in os.scandir(dce_folder):
-            if entry.is_file():
-                try:
-                    total_size += entry.stat().st_size
-                except (PermissionError, FileNotFoundError) as e:
-                    print(f"Error accessing file {entry.path}: {e}")
-        return total_size
-    
-    except Exception as e:
-        print(f"Error processing folder {dce_folder}: {e}")
-        return 0
+#         for entry in os.scandir(dce_folder):
+#             if entry.is_file():
+#                 try:
+#                     total_size += entry.stat().st_size
+#                 except (PermissionError, FileNotFoundError) as e:
+#                     print(f"Error accessing file {entry.path}: {e}")
+#         return total_size
+
+#     except Exception as e:
+#         print(f"Error processing folder {dce_folder}: {e}")
+#         return 0
 
 
 def hasChanged(dicto, consino, session):
@@ -492,14 +493,7 @@ def hasChanged(dicto, consino, session):
         helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Execution location: {dicto[C.LIEUEX]} vs {consino.lieu_execution}')
         return 1
 
-    if dicto[C.BYTESS] != 0:
-        localBytes = getDCEbytes(consino)
-        if localBytes != 0:
-            if dicto[C.BYTESS] != localBytes:
-                helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files bytes: {dicto[C.BYTESS]} vs {localBytes}')
-                return 1
 
-    
     lots_dc = dicto[C.LOTSSS]
 
     if lots_dc :
@@ -522,8 +516,17 @@ def hasChanged(dicto, consino, session):
         if round(float(total_caut_dc), 1) != round(float(total_caut_db), 1) :
             helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Total caution: {float(total_caut_dc)} vs {float(total_caut_db)}')
             return 1
+        
 
-    # helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Changes not found in checked fields.')
+    if dicto[C.BYTESS] != 0:
+        # localBytes = getDCEbytes(consino)
+        localBytes = consino.size_bytes
+        if localBytes != 0:
+            if dicto[C.BYTESS] != localBytes:
+                helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== Change found: Files bytes: {dicto[C.BYTESS]} vs {localBytes}')
+                return 1
+
+    helper.printMessage('DEBUG', 'dbaser.hasChanged', f'=== No changes found in checked fields.')
     return 0
 
 

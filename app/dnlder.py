@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 
 import helper
 import settings as C
-from dbaser import getCurrentCons
+from dbaser import getCurrentCons, consExists
 
 
 FILE_PREFIX   = 'eMarches.com'
@@ -55,7 +55,20 @@ def insertExtras(zipArchive, extrasDir=None):
         helper.printMessage('WARN', 'dnlder.insertExtras', f"Something went wrong : {e}")
 
 
-def getDCE(link_item):
+def getDCE(link_item, session=None):
+
+    def make_link(link_item, type=None):
+        if type == 'query': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDemandeTelechargementDce&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
+        if type == 'file': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDownloadCompleteDce&reference={link_item[0]}&orgAcronym={link_item[1]}'
+        return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDetailsConsultation&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
+
+    def get_filename(cd):
+        if not cd: return None
+        fname = re.findall('filename=(.+)', cd)
+        if len(fname) == 0: return None
+        return fname[0]
+
+
     if not os.path.exists(C.MEDIA_ROOT): 
         helper.printMessage('ERROR', 'dnlder.getDCE', f'Could not read media directory {C.MEDIA_ROOT}.')
         return 1
@@ -68,18 +81,6 @@ def getDCE(link_item):
     if not os.path.exists(con_path):
         helper.printMessage('ERROR', 'dnlder.getDCE', f'Could not find DCE directory {con_path}.')
         return 1
-
-
-    def make_link(link_item, type=None):
-        if type == 'query': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDemandeTelechargementDce&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
-        if type == 'file': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDownloadCompleteDce&reference={link_item[0]}&orgAcronym={link_item[1]}'
-        return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDetailsConsultation&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
-
-    def get_filename(cd):
-        if not cd: return None
-        fname = re.findall('filename=(.+)', cd)
-        if len(fname) == 0: return None
-        return fname[0]
 
 
     if len(C.USER_AGENTS) == 0 : 
@@ -216,7 +217,11 @@ def getDCE(link_item):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
-            pass
+            consino = dbaser.consExists(session, portal_number)
+            if consino:
+                if consino.size_bytes != bytes_written:
+                    consino.size_bytes = bytes_written
+                    consino.save()
             # insertExtras(filename)
         else:
             raise IOError("File size mismatch: Not all content was written.")

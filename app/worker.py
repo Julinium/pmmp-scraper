@@ -92,10 +92,6 @@ for i, l in enumerate(links, start=1):
             cons_dict = objeer.getConsObject(l)
             rlc += 1
             if cons_dict:
-
-                # helper.printMessage('DEBUG', 'worker', f'>>>>>>>>>>>>>>> worker XXXXXXXXXXXXXXX')
-                # helper.printMessage('DEBUG', 'worker', f"cons_dict = { str(cons_dict) }")
-                # helper.printMessage('DEBUG', 'worker', f'XXXXXXXXXXXXXXX worker <<<<<<<<<<<<<<<')
                 helper.printMessage('DEBUG', 'worker', 'Successfully read objects for link. Saving to database ... ')
                 if dbaser.writeData(cons_dict, session) == 0: 
                     count_cons += 1
@@ -119,7 +115,9 @@ for i, l in enumerate(links, start=1):
         if len(dce_files) == 0:
             try:
                 rlc += 1
-                if dnlder.getDCE(l) == 0:
+                downloaded = dnlder.getDCE(l, session)
+                if downloaded == 0:
+                    # consino.size_bytes = downloaded
                     count_dce += 1
                     helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.')
                 else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.')
