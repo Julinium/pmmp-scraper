@@ -216,19 +216,19 @@ def getDCE(link_item, session):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
-            try:
-                helper.printMessage('DEBUG', 'dnlder.getDCE', f'Trying to update file size bytes for id : {link_item[0]}.')
-                consino = consExists(session, link_item[0])
-                if consino:
-                    if consino.size_bytes != bytes_written:
-                        helper.printMessage('DEBUG', 'dnlder.getDCE', f'Updating file size bytes for id : {consino.portal_id}.')
-                        consino.size_bytes = bytes_written
-                        session.commit()
-                    else:
-                        helper.printMessage('DEBUG', 'dnlder.getDCE', f'File size bytes for id {consino.portal_id} has the same value.')
-            except Exception as x:
-                helper.printMessage('ERROR', 'dnlder.getDCE', f"Error updating file size bytes on database: {x}")
-            # insertExtras(filename)
+            if session:
+                try:
+                    helper.printMessage('DEBUG', 'dnlder.getDCE', f'Trying to update file size bytes for id : {link_item[0]}.')
+                    consino = consExists(session, link_item[0])
+                    if consino:
+                        if consino.size_bytes != bytes_written:
+                            helper.printMessage('DEBUG', 'dnlder.getDCE', f'Updating file size bytes for id : {consino.portal_id}.')
+                            consino.size_bytes = bytes_written
+                            session.commit()
+                        else:
+                            helper.printMessage('DEBUG', 'dnlder.getDCE', f'File size bytes for id {consino.portal_id} has the same value.')
+                except Exception as x:
+                    helper.printMessage('ERROR', 'dnlder.getDCE', f"Error updating file size bytes on database: {x}")
         else:
             raise IOError("File size mismatch: Not all content was written.")
         if os.path.getsize(filename) == 0: raise IOError("File was created but is empty. Go and know why!")
@@ -265,7 +265,7 @@ def getMissingDCE(session):
             if len(dce_files) == 0:
                 rlc += 1
                 l = (con.portal_id, con.portal_link[:3], con.date_publication)
-                if getDCE(l) == 0:
+                if getDCE(l, session) == 0:
                     corrected += 1
                     helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for id = {con.portal_id}.\n\n')
                 else:
