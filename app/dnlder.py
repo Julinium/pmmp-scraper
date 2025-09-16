@@ -55,7 +55,7 @@ def insertExtras(zipArchive, extrasDir=None):
         helper.printMessage('WARN', 'dnlder.insertExtras', f"Something went wrong : {e}")
 
 
-def getDCE(link_item, session):
+def getDCE(link_item, session=None):
 
     def make_link(link_item, type=None):
         if type == 'query': return f'{C.SITE_INDEX}?page=entreprise.EntrepriseDemandeTelechargementDce&refConsultation={link_item[0]}&orgAcronyme={link_item[1]}'
