@@ -223,7 +223,7 @@ def getDCE(link_item, session):
                     if consino.size_bytes != bytes_written:
                         helper.printMessage('DEBUG', 'dnlder.getDCE', f'Updating file size bytes for id : {consino.portal_id}.')
                         consino.size_bytes = bytes_written
-                        consino.save()
+                        session.commit()
                     else:
                         helper.printMessage('DEBUG', 'dnlder.getDCE', f'File size bytes for id {consino.portal_id} has the same value.')
             except Exception as x:
