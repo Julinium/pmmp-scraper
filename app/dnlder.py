@@ -216,6 +216,7 @@ def getDCE(link_item, session=None):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
+            # TODO: insertExtras here
             if session:
                 try:
                     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Trying to update file size bytes for id : {link_item[0]}.')
