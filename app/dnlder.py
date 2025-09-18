@@ -192,7 +192,7 @@ def getDCE(link_item, session=None):
         helper.printMessage('ERROR', 'objeer.getDCE', f'Getting file: Response Status Code: {request_file.status_code} !')
         helper.sleepRandom(SLEEP_4XX_MIN, SLEEP_4XX_MAX)
         return request_file.status_code
-    else: helper.printMessage('DEBUG', 'dnlder.getDCE', f'Getting file returned Status Code {request_file.status_code}')
+    else: helper.printMessage('DEBUG', 'dnlder.getDCE', f'Getting file returned Status Code: {request_file.status_code}')
 
     try:
         filename_cd = get_filename(request_file.headers.get('content-disposition')).replace('"', '').replace(';', '')
