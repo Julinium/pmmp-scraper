@@ -192,14 +192,16 @@ def getDCE(link_item, session=None):
         helper.printMessage('ERROR', 'objeer.getDCE', f'Getting file: Response Status Code: {request_file.status_code} !')
         helper.sleepRandom(SLEEP_4XX_MIN, SLEEP_4XX_MAX)
         return request_file.status_code
-    else: helper.printMessage('DEBUG', 'dnlder.getDCE', f'Getting file: Successful')
+    else: helper.printMessage('DEBUG', 'dnlder.getDCE', f'Getting file returned Status Code {request_file.status_code}')
 
     try:
         filename_cd = get_filename(request_file.headers.get('content-disposition')).replace('"', '').replace(';', '')
     except Exception as xc:
         helper.printMessage('WARN', 'dnlder.getDCE', 'Could not get file name from portal.')
         helper.printMessage('WARN', 'dnlder.getDCE', str(xc))
-        filename_cd = f"CONS-{link_item[0]}"
+        helper.printMessage('ERROR', 'dnlder.getDCE', 'Looks like the server sent back a page, not a file !')
+        return 1
+        # filename_cd = f"CONS-{link_item[0]}.zip"
 
     fiel_name_base = os.path.splitext(filename_cd)[0]
     file_extension = os.path.splitext(filename_cd)[1]
@@ -208,7 +210,7 @@ def getDCE(link_item, session=None):
     filename_base = f'{FILE_PREFIX}-{cleaned_name}{file_extension}'
     filename = os.path.join(con_path, filename_base)
     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Writing file content to {filename_base} ... ')
-    
+
     try:
         with open(filename, 'wb') as file:
             bytes_written = file.write(request_file.content)
@@ -216,7 +218,6 @@ def getDCE(link_item, session=None):
 
         # Verify the file size
         if bytes_written == len(request_file.content):
-            # TODO: insertExtras here
             if session:
                 try:
                     helper.printMessage('DEBUG', 'dnlder.getDCE', f'Trying to update file size bytes for id : {link_item[0]}.')
@@ -227,7 +228,7 @@ def getDCE(link_item, session=None):
                             consino.size_bytes = bytes_written
                             session.commit()
                         else:
-                            helper.printMessage('DEBUG', 'dnlder.getDCE', f'File size bytes for id {consino.portal_id} has the same value.')
+                            helper.printMessage('DEBUG', 'dnlder.getDCE', f'File size bytes for id {consino.portal_id} was the same.')
                 except Exception as x:
                     helper.printMessage('ERROR', 'dnlder.getDCE', f"Error updating file size bytes on database: {x}")
         else:
