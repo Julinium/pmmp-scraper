@@ -10,7 +10,7 @@ import settings as C
 import helper
 
 
-def printMessage(level='INFO', raiser='', message='!!! Empty Message !!!'):
+def printMessage(level='INFO', raiser='Main', message='!!! Empty Message !!!'):
     """
     # Synopsis:
     Prints a message to the stdout, tagged with a level and current datetime.

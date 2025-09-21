@@ -125,12 +125,14 @@ for i, l in enumerate(links, start=1):
         else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.')
 
 
-if illacha == 0:
-    print("\n\n\n")
-    helper.printMessage('INFO', 'worker', '========== Successfully saved objects.')
-    dbaser.updateUpdateTime(session)
-else:
-    helper.printMessage('ERROR', 'worker', '========== Something went wrong while saving objects to database.')
+print("\n\n\n")
+
+if not C.IMPORT_LINKS:
+    if illacha == 0:
+        helper.printMessage('INFO', 'worker', '========== Successfully saved objects.')
+        dbaser.updateUpdateTime(session)
+    else:
+        helper.printMessage('ERROR', 'worker', '========== Something went wrong while saving objects to database.')
 
 
 ######################## MISSING FILES ########################
@@ -139,6 +141,7 @@ if C.SKIP_DCE:
     helper.printMessage('INFO', 'worker', 'Settings: Skip missing DCE files...')
 else:
     helper.printMessage('INFO', 'worker', 'Getting missing DCE files...')
+    print("\n\n")
     cor = dnlder.getMissingDCE(session)
     count_dce += cor[3]
     # if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.')
