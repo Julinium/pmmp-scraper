@@ -45,6 +45,8 @@ else:
 
 
 helper.sleepRandom(10, 30)
+helper.printMessage('INFO', 'worker', f'##### Working on {links_count} links ...')
+
 rlc = 0
 count_cons, count_dce = 0, 0
 for i, l in enumerate(links, start=1):
@@ -54,7 +56,7 @@ for i, l in enumerate(links, start=1):
 
     portal_number = l[0]
     print("\n\n")
-    helper.printMessage('INFO', 'worker', f'##### Working on link {i:04}/{links_count}: id = {portal_number} ...')
+    helper.printMessage('DEBUG', 'worker', f'##### Working on link {i:04}/{links_count}: id = {portal_number} ...')
 
 
     consino = dbaser.consExists(session, portal_number)
@@ -81,7 +83,7 @@ for i, l in enumerate(links, start=1):
                                 helper.printMessage('DEBUG', 'worker', f'Folder successfully removed {C.DL_PATH_PREFIX}{portal_number}.')
                             except Exception as sx:
                                 helper.printMessage('ERROR', 'worker', f'{str(sx)}')
-                    else: helper.printMessage('INFO', 'worker', f'No changes were detected for id = {portal_number}. Skipping.')
+                    else: helper.printMessage('DEBUG', 'worker', f'No changes were detected for id = {portal_number}. Skipping.')
             except Exception as xc:
                 helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     
@@ -95,7 +97,7 @@ for i, l in enumerate(links, start=1):
                 helper.printMessage('DEBUG', 'worker', 'Successfully read objects for link. Saving to database ... ')
                 if dbaser.writeData(cons_dict, session) == 0: 
                     count_cons += 1
-                    helper.printMessage('INFO', 'worker', '===== Objects saved successfully for link.')
+                    helper.printMessage('DEBUG', 'worker', '===== Objects saved successfully for link.')
                 else: helper.printMessage('ERROR', 'worker', f'===== Errors occurred while saving objects for link {i:04}/{links_count}: id = {portal_number} ...')
             else:
                 illacha += 1
@@ -103,7 +105,7 @@ for i, l in enumerate(links, start=1):
         except Exception as xc:
             helper.printMessage('ERROR', 'worker', f'{str(xc)}')
     else:
-        helper.printMessage('INFO', 'worker', '===== Object already on database. Skipping link.')
+        helper.printMessage('DEBUG', 'worker', '===== Object already on database. Skipping link.')
 
     if C.SKIP_DCE:
         helper.printMessage('DEBUG', 'worker', f'Settings: Skip DCE for item {i:04}/{links_count}, id = {portal_number} ... ')
@@ -122,7 +124,7 @@ for i, l in enumerate(links, start=1):
                     helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.')
                 else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.')
             except Exception as xc: helper.printMessage('ERROR', 'worker', f'{str(xc)}')
-        else: helper.printMessage('INFO', 'worker', '===== DCE files are already there. Skipping.')
+        else: helper.printMessage('DEBUG', 'worker', '===== DCE files are already there. Skipping.')
 
 
 print("\n\n\n")
