@@ -45,7 +45,7 @@ else:
 
 
 helper.sleepRandom(10, 30)
-helper.printMessage('INFO', 'worker', f'##### Working on {links_count} links ...')
+helper.printMessage('INFO', 'worker', f'##### Working on {links_count} links ...\n\n')
 
 rlc = 0
 count_cons, count_dce = 0, 0
@@ -119,26 +119,26 @@ for i, l in enumerate(links, start=1):
                 if downloaded == 0:
                     # consino.size_bytes = downloaded
                     count_dce += 1
-                    helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.')
-                else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.')
+                    helper.printMessage('INFO', 'worker', f'===== DCE download complete successfully for item {i:04}/{links_count}: id = {portal_number}.\n')
+                else: helper.printMessage('ERROR', 'worker', f'===== Something went wrong while downloading DCE for item {i:04}/{links_count}: id = {portal_number}.\n')
             except Exception as xc: helper.printMessage('ERROR', 'worker', f'{str(xc)}')
-        else: helper.printMessage('DEBUG', 'worker', '===== DCE files are already there. Skipping.')
+        else: helper.printMessage('DEBUG', 'worker', '===== DCE files are already there. Skipping.\n')
 
 
 if not C.IMPORT_LINKS:
     if illacha == 0:
-        helper.printMessage('INFO', 'worker', '========== Successfully saved objects.')
+        helper.printMessage('INFO', 'worker', '========== Successfully saved objects.\n')
         dbaser.updateUpdateTime(session)
     else:
-        helper.printMessage('ERROR', 'worker', '========== Something went wrong while saving objects to database.')
+        helper.printMessage('ERROR', 'worker', '========== Something went wrong while saving objects to database.\n')
 
 
 ######################## MISSING FILES ########################
 if C.SKIP_DCE:
-    helper.printMessage('INFO', 'worker', 'Settings: Skip missing DCE files...')
+    helper.printMessage('INFO', 'worker', 'Settings: Skip missing DCE files.\n')
 else:
-    helper.printMessage('INFO', 'worker', 'Getting missing DCE files...')
-    print("\n\n")
+    helper.printMessage('INFO', 'worker', 'Getting missing DCE files...\n\n')
+    print("\n")
     cor = dnlder.getMissingDCE(session)
     count_dce += cor[3]
     # if cor[0] != 0: helper.printMessage('ERROR', 'worker', '========== Something went wrong when getting missing DCE.')
