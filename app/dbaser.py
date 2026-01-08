@@ -121,6 +121,14 @@ def writeData(dicto, session):
         integer: 0 if no errors were reported, non-zero otherwise.
     """
 
+    def lottify(lot_no_str, default_int):
+        try:
+            s = lot_no_str.lower().replace('lot', '').replace(':', '').replace('#', '')
+            n = int(s.strip())
+            if n > 0: return n
+        except: pass
+        return default_int
+
     total_esti, total_caut = 0, 0
     l_requires_qua, l_requires_agr, l_requires_ech, l_has_reu, l_has_vis = None, None, None, None, None,
     total_qua, total_agr, total_ech, total_reu, total_vis = 0, 0, 0, 0, 0
@@ -361,7 +369,7 @@ def writeData(dicto, session):
             # Lot
             lot = Lot(
                 id=uuid.uuid4(),
-                lot_number=l[C.LOTNMB],  #
+                lot_number=lottify(l[C.LOTNMB], i),  #
                 consultation=consultation.id,
                 objet=l[C.OBJETL],
                 categorie=categorielot.id,
