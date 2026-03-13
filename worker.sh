@@ -26,13 +26,18 @@ else
     touch $_lock_file
     $SCRIPT_DIR/.venv/bin/python $SCRIPT_DIR/app/worker.py "$@" >> "$_logs_file"
 
-    # If operating from a remote machine, transfer files to the server.
-    # Pre-established SSH tunnel is required
+    # If operating from a remote machine, transfer logs to the server.
+    # This is checked by the existence of _local_file (which is created only on the server, not on remote machines)
     _local_file="$_crony_dir/.local"
     if ! test -e "$_local_file"; then
-        echo "Transferring logs files ..."
-        rsync -av --update -e 'ssh -p 19164' $_logs_dir/ insino@emarches.com:/var/opt/pmmp-scraper/logs
+        # rsync-pmmp is an alias to an rsync command like:
+        # `rsync -av --update -e 'ssh [-p xxxx]' <full-path-to-local-logs-folder/> <user>@emarches.com:<full-path-to-logs-folder>' 
+        # Note: pre-established SSH tunnel is required
+        eecho "Transferring logs files ..."
+        bash -ic "rsync-logs"
     fi
+
+
 
     echo "Script finished executing. See logs and system journal for details."
     if test -e "$_lock_file"; then
