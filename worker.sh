@@ -25,6 +25,15 @@ if test -e "$_lock_file"; then
 else
     touch $_lock_file
     $SCRIPT_DIR/.venv/bin/python $SCRIPT_DIR/app/worker.py "$@" >> "$_logs_file"
+
+    # If operating from a remote machine, transfer files to the server.
+    # Pre-established SSH tunnel is required
+    _local_file="$_crony_dir/.local"
+    if ! test -e "$_local_file"; then
+        echo "Transferring logs files ..."
+        rsync -av --update -e 'ssh -p 19164' $_logs_dir/ insino@emarches.com:/var/opt/pmmp-scraper/logs
+    fi
+
     echo "Script finished executing. See logs and system journal for details."
     if test -e "$_lock_file"; then
         echo "Trying to remove Lock file after script finished."

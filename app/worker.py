@@ -55,7 +55,7 @@ for i, l in enumerate(links, start=1):
         rlc = 0
 
     portal_number = l[0]
-    helper.printMessage('DEBUG', 'worker', f'##### Working on link {i:04}/{links_count}: id = {portal_number} ...')
+    helper.printMessage('DEBUG', 'worker', f'##### Working on link {i:04}/{links_count}: id = {portal_number} ...\n\n')
 
 
     consino = dbaser.consExists(session, portal_number)
