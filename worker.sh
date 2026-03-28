@@ -33,7 +33,7 @@ else
         # rsync-pmmp is an alias to an rsync command like:
         # `rsync -av --update -e 'ssh [-p xxxx]' <full-path-to-local-logs-folder/> <user>@emarches.com:<full-path-to-logs-folder>' 
         # Note: pre-established SSH tunnel is required
-        eecho "Transferring logs files ..."
+        echo "Transferring logs files ..."
         bash -ic "rsync-logs"
     fi
 
