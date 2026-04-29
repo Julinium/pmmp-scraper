@@ -24,7 +24,7 @@ if test -e "$_lock_file"; then
     echo "The lock file will be removed on next boot. It can also be removed manually."
 else
     touch $_lock_file
-    $SCRIPT_DIR/.venv/bin/python $SCRIPT_DIR/app/worker.py "$@" >> "$_logs_file"
+    $SCRIPT_DIR/.venv/bin/python -u $SCRIPT_DIR/app/worker.py "$@" >> "$_logs_file"
 
     # If operating from a remote machine, transfer logs to the server.
     # This is checked by the existence of _local_file (which is created only on the server, not on remote machines)
